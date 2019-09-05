@@ -6,7 +6,6 @@ import random
 class Metropolis:
     """Metropolis methods."""
 
-
     def __init__(self, delta_R, delta_t, num_particles, num_dimensions,
                  sampler, c):
         """Instance of class."""
