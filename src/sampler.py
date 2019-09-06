@@ -2,6 +2,7 @@
 import numpy as np
 import math
 
+
 class Sampler:
     """Calculate variables regarding energy of given system."""
 
@@ -69,36 +70,21 @@ class Sampler:
     def local_energy_times_wf(self, positions):
         """Return local energy times the derivative of wave equation."""
 
-        return 0
+        energy = self.local_energy(positions)
+        energy_times_wf_a = self.s.derivative_wavefunction(positions)*energy
+        energy_times_wf_b = self.s.derivative_wavefunction(positions)*energy
+        energy_times_wf_W = self.s.derivative_wavefunction(positions)*energy
+
+        return energy_times_wf
 
     def probability(self, positions, new_positions):
         """Wave function with new positions squared divided by."""
         """wave equation with old positions squared"""
 
-        return 0
+        wf_old = self.s.wavefunction(positions)
+        wf_new = self.s.wavefunction(new_positions)
+        numerator = wf_new*wf_new
+        denominator = wf_old*wf_old
+        acceptance_ratio = numerator/denominator
 
-    def drift_force(self, positions):
-        """Return drift force."""
-        # position_forward = positions + self.step
-        position_forward = np.array(positions) + self.step
-        wf_forward = self.s.wavefunction(position_forward)
-        wf_current = self.s.wavefunction(positions)
-        derivativ = (wf_forward - wf_current)/self.step
-
-        return derivativ
-
-    def greens_function(self, positions, new_positions_importance, delta_t):
-        """Calculate Greens function."""
-        # greens_function = 0.0
-        """
-        D = 0.0
-        F_old = self.drift_force(positions)
-        F_new = self.drift_force(new_positions_importance)
-        greens_function = (0.5*(F_old + F_new) * (0.5 * (positions -
-                           new_positions_importance)) +
-                           D*delta_t*(F_old - F_new))
-        """
-        greens_function = 0.0
-        # greens_function = np.exp(greens_function)
-
-        return greens_function
+        return acceptance_ratio
