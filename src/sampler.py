@@ -18,8 +18,7 @@ class Sampler:
         """Return the local energy."""
 
         Xi = 0.0
-        fd = self.first_derivative_wavefunction
-        sd = self.second_derivative_wavefunction
+        fd, sd = self.derivative_wavefunction
         interaction = self.interaction
         for i in range(self.s.M):
             Xi += self.positions[i]
@@ -75,7 +74,7 @@ class Sampler:
         energy_times_wf_b = self.s.derivative_wavefunction(positions)*energy
         energy_times_wf_W = self.s.derivative_wavefunction(positions)*energy
 
-        return energy_times_wf
+        return energy_times_wf_a, energy_times_wf_b, energy_times_wf_W
 
     def probability(self, positions, new_positions):
         """Wave function with new positions squared divided by."""
