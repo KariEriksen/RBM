@@ -7,8 +7,9 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from metropolis import Metropolis # noqa: 401
 from optimizer import Optimizer # noqa: 401
+from Hamiltonian.non_interaction import Non_Interaction # noqa: 401
+from Wavefunction.wavefunction import Wavefunction # noqa: 401
 from sampler import Sampler # noqa: 401
-from system import System # noqa: 401
 
 """
 Restricted Boltzmann Machine with Variational Monte Carlo.
@@ -49,8 +50,8 @@ def run_vmc(a_i, b_j, W_ij):
     positions = np.random.rand(num_particles, num_dimensions)
 
     # Call system class in order to set new parameters
-    sys = System(num_particles, num_dimensions, hidden_nodes, a_i, b_j, W_ij,
-                 sigma)
+    sys = Wavefunction(num_particles, num_dimensions, hidden_nodes,
+                       a_i, b_j, W_ij, sigma)
     sam = Sampler(gamma, omega, numerical_step_length, sys)
     met = Metropolis(step_metropolis, step_importance, num_particles,
                      num_dimensions, sam, 0.0)
