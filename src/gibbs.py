@@ -1,6 +1,7 @@
 """Metropolis class."""
 import numpy as np
 import random
+import math
 from sampler import Sampler # noqa: 401
 
 
@@ -97,6 +98,24 @@ class Metropolis:
 
         return positions
 
+    def gibbs_step(positions, a, b, W):
+        """Calculate new Gibbs step."""
+        """Fix"""
+        hidden_nodes = 3
+        visible_nodes = 4
+        h_j = np.zeros(hidden_nodes)
+        W = np.zeros((visible_nodes, hidden_nodes))
+        X_i = positions
+        sigma = 1
+        sigma2 = 1
+
+        for j in range(hidden_nodes):
+            h_j[j] = 1/(1 + math.exp(-b[j] - np.sum(X_i % W[:, j])/sigma2))
+
+        for i in range(visible_nodes):
+            mu = a[i] + math.sum(W[i, :]*h_j)
+            X_i[i] = np.random.normal(mu, sigma)
+
     def run_metropolis(self):
         """Run the naive metropolis algorithm."""
 
@@ -133,18 +152,21 @@ class Metropolis:
         sampler.print_avereges()
         return d_El
 
-
-    def gibbs_sampling(self):
+    def run_gibbs_sampling(self):
         """Run Gibbs sampling."""
+        """Fix"""
 
-        hidden_nodes = 3
-        visible_nodes = self.num_d*self.num_p
-        h_j = np.zeros(hidden_nodes)
-        W = np.zeros((visible_nodes, hidden_nodes))
+        # Initialize the posistions for each new Monte Carlo run
+        positions = np.random.rand(self.num_p, self.num_d)
+        # Initialize sampler method for each new Monte Carlo run
+        sampler = Sampler(self.w, self.h)
 
-        for j in range(hidden_nodes):
-            h_j[j] = 1/(1 + math.exp(-b[j] - np.sum(X_i % W[:,j])/sigma2))
-
-        for i in range(visible_nodes):
-            mu = a[i] + math.sum(W[i,:]*h_j)
-            X_i[i] = np.random.normal(mu, sigma)
+        for i in range(self.mc_cycles):
+            new_positions = self.gibbs_step(positions)
+            positions = new_positions
+            sampler.sample_values(positions)
+        sampler.average_values(self.mc_cycles)
+        print 'accepted states = ', self.c
+        d_El = sampler.derivative_energy
+        sampler.print_avereges()
+        return d_El
