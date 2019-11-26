@@ -1,6 +1,5 @@
 """Wavefunction class."""
 import math
-import numpy as np
 
 
 class Wavefunction:
@@ -18,9 +17,6 @@ class Wavefunction:
         self.sigma = sigma
         self.sigma2 = sigma**2
         self.sigma4 = self.sigma2**2
-        self.dpsi_da = np.zeros((1, self.M))
-        self.dpsi_db = np.zeros((1, self.N))
-        self.dpsi_dW = np.zeros((self.M, self.N))
 
     def wavefunction(self, positions):
         """Return the NQS wave function ."""
@@ -42,7 +38,7 @@ class Wavefunction:
         wavefunction = (1/Z)*math.exp(rbm_visible)*rbm_hidden
         return wavefunction
 
-    def derivatives_wavefunction(self, positions):
+    def gradients_wavefunction(self, positions):
         """Return the first and second derivative of ln of the wave function"""
 
         first_derivative = 0.0
@@ -67,7 +63,7 @@ class Wavefunction:
 
         return first_derivative, second_derivative
 
-    def quandratic_derivatives_wavefunction(self, positions):
+    def quandratic_gradients_wavefunction(self, positions):
         """Return the first and second derivative of ln of the"""
         """quadratic wave function"""
         """Used in Gibbs sampling"""
@@ -77,7 +73,7 @@ class Wavefunction:
 
         return first_derivative_gibbs, second_derivative_gibbs
 
-    def derivative_wavefunction_params(self, positions):
+    def alpha_gradient_wavefunction(self, positions):
         """Return the first derivative of ln of the wave function"""
         """with respect to the variational parameter a, b and W"""
         """This is equivalant to the first derivative of the wave
@@ -95,7 +91,7 @@ class Wavefunction:
 
         return dpsi_da, dpsi_db, dpsi_dW
 
-    def probability(self, positions, new_positions):
+    def wavefunction_ratio(self, positions, new_positions):
         """Wave function with new positions squared divided by."""
         """wave equation with old positions squared"""
 
