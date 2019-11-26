@@ -1,89 +1,54 @@
 """Sampler class."""
 import numpy as np
-import math
 
 
 class Sampler:
-    """Calculate variables regarding energy of given system."""
+    """Calculate variables regarding energy of given wavefunction."""
 
-    def __init__(self, gamma, omega, numerical_step, system):
+    def __init__(self, wavefunction, hamiltonian):
         """Instance of class."""
-        self.gamma = gamma
-        self.omega = omega
-        self.omega2 = omega*omega
-        self.step = numerical_step
-        self.s = system
+        self.w = wavefunction
+        self.h = hamiltonian
 
-    def local_energy(self, positions):
-        """Return the local energy."""
+        self.local_energy = 0.0
+        self.alpha_gradient_wf = 0.0
+        self.accumulate_energy = 0.0
+        self.accumulate_psi_term = np.array((1, 3))
+        self.accumulate_both = np.array((1, 3))
+        self.expec_val_energy = 0.0
+        self.expec_val_psi = np.array((1, 3))
+        self.expec_val_both = np.array((1, 3))
+        self.derivative_energy = np.array((1, 3))
 
-        Xi = 0.0
-        fd, sd = self.derivative_wavefunction
-        interaction = self.interaction
-        for i in range(self.s.M):
-            Xi += self.positions[i]
-        local_energy = 0.5*(-fd*fd + sd + self.omega2*Xi) + interaction
+    def sample_values(self, positions):
+        """Get the local energy from Hamiltonian class"""
+        """Sample important values"""
 
-        return local_energy
+        self.local_energy = self.h.local_energy(positions)
+        self.accumulate_energy += self.h.local_energy(positions)
+        alpha_gradient_wf = self.w.alpha_gradient_wavefunction(positions)
 
-    def derivatives_wavefunction(self, positions):
-        """Return the first and second derivative of ln of the wave function"""
+        for i in range(3):
+            self.accumulate_psi_term[i] += alpha_gradient_wf[i]
+            self.accumulate_both[i] += alpha_gradient_wf[i]*self.local_energy
 
-        first_derivative = 0.0
-        second_derivative = 0.0
+    def average_values(self, monte_carlo_cycles):
 
-        for i in range(self.s.M):
-            sum2 = 0.0
-            sum3 = 0.0
-            for j in range(self.s.N):
-                sum1 = 0.0
-                for k in range(self.s.M):
-                    sum1 += self.positions[k]*self.s.W[k, j]/self.s.sigma2
+        mcc = monte_carlo_cycles
+        self.expec_val_energy = self.accumulate_energy/mcc
 
-                exponent = math.exp(-self.s.b[j] - sum1)
-                sum2 += self.s.W[i, j]/(1 + exponent)
-                sum3 += sum2*sum2*exponent
+        for i in range(3):
+            self.expec_val_psi[i] = self.accumulate_psi_term[i]/mcc
+            self.expec_val_both[i] = self.accumulate_both[i]/mcc
+            self.derivative_energy[i] = 2*(self.expec_val_both[i] -
+                                           (self.expec_val_psi[i] *
+                                            self.expec_val_energy))
 
-            first_derivative += (-(self.positions[i] - self.a[i])/self.s.sigma2
-                                 + (1/self.s.sigma2)*sum2)
+    def print_avereges(self):
 
-            second_derivative += -1/self.s.sigma2 + (1/self.s.sigma4)*sum3
-
-        return first_derivative, second_derivative
-
-    def derivatives_qd_wavefunction(self, positions):
-        """Return the first and second derivative of ln of the"""
-        """quadratic wave function"""
-        """Used in Gibbs sampling"""
-
-        first_derivative_gibbs = 0.5*self.derivatives_wavefunction[0]
-        second_derivative_gibbs = 0.5*self.derivatives_wavefunction[1]
-
-        return first_derivative_gibbs, second_derivative_gibbs
-
-    def interaction(self, positions):
-        """Return the interaction between particles"""
-
-        return 0
-
-    def local_energy_times_wf(self, positions):
-        """Return local energy times the derivative of wave equation."""
-
-        energy = self.local_energy(positions)
-        energy_times_wf_a = self.s.derivative_wavefunction(positions)*energy
-        energy_times_wf_b = self.s.derivative_wavefunction(positions)*energy
-        energy_times_wf_W = self.s.derivative_wavefunction(positions)*energy
-
-        return energy_times_wf_a, energy_times_wf_b, energy_times_wf_W
-
-    def probability(self, positions, new_positions):
-        """Wave function with new positions squared divided by."""
-        """wave equation with old positions squared"""
-
-        wf_old = self.s.wavefunction(positions)
-        wf_new = self.s.wavefunction(new_positions)
-        numerator = wf_new*wf_new
-        denominator = wf_old*wf_old
-        acceptance_ratio = numerator/denominator
-
-        return acceptance_ratio
+        print ('deri energy param a = ', self.derivative_energy_a[0])
+        print ('deri energy param b = ', self.derivative_energy_b[1])
+        print ('deri energy param W = ', self.derivative_energy_W[2])
+        print ('total energy =  ', self.local_energy)
+        # energy/num_particles
+        print ('----------------------------')
