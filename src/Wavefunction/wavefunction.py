@@ -28,9 +28,11 @@ class Wavefunction:
         prod = 1.0
         for i in range(self.M):
             sum1 += ((positions[i] - self.a[i])**2)/(2*self.sigma2)
-            for j in range(self.N):
+        for j in range(self.N):
+            for i in range(self.M):
                 sum2 += positions[i]*self.W[i, j]/self.sigma2
-                prod *= 1 + math.exp(self.b[j]) + sum2
+            sum2 = self.b[j] + sum2
+            prod *= 1 + math.exp(sum2)
 
         wavefunction = math.exp(sum1)*prod
         return wavefunction
