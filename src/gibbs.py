@@ -118,7 +118,10 @@ class Metropolis:
                 sum += self.w.W[i, j]*h_j[j]
 
             mu = self.w.a[i] + sum
+            # acceptance with probability of 1
             positions[i] = np.random.normal(mu, sigma)
+
+        return positions
 
     def run_metropolis(self):
         """Run the naive metropolis algorithm."""
