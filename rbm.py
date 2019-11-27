@@ -38,22 +38,33 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
     sigma = 1.0
     omega = 1.0
     gamma = 1.0
-    # Call system class in order to set new parameters
-    wave = Wavefunction(num_particles, num_dimensions, hidden_nodes,
-                        a_i, b_j, W_ij, sigma)
-    hamilton = Hamiltonian(gamma, omega, wave)
-    met = Metropolis(monte_carlo_cycles, step_metropolis, step_importance,
-                     num_particles, num_dimensions, wave, hamilton)
+
+    param_a = a_i
+    param_b = b_j
+    param_W = W_ij
     for i in range(gradient_iterations):
 
-        new_energy, new_positions, count = met.metropolis()
+        # Call system class in order to set new parameters
+        wave = Wavefunction(num_particles, num_dimensions, hidden_nodes,
+                            param_a, param_b, param_W, sigma)
+        hamilton = Hamiltonian(gamma, omega, wave)
+        met = Metropolis(monte_carlo_cycles, step_metropolis, step_importance,
+                         num_particles, num_dimensions, wave, hamilton)
+
+        d_El = met.run_metropolis()
         # Run with analytical expression for quantum force = true
-        d_El = met.run_importance_sampling('true')
+        # d_El = met.run_importance_sampling('true')
         d_El_a = d_El[0]
         d_El_b = d_El[1]
         d_El_W = d_El[2]
-        new_a, new_b, new_W = opt.gradient_descent(a_i, b_j, W_ij, d_El_a,
-                                                   d_El_b, d_El_W)
+        new_a, new_b, new_W = opt.gradient_descent(param_a, param_b, param_W,
+                                                   d_El_a, d_El_b, d_El_W)
+
+        print 'new alpha = ', new_a
+        print 'number of gradien descent runs = ', i
+        param_a = new_a
+        param_b = new_b
+        param_W = new_W
 
 
 def weak_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
@@ -67,20 +78,33 @@ def weak_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
     sigma = 1.0
     omega = 1.0
     gamma = 1.0
-    # Call system class in order to set new parameters
-    wave = Wavefunction(num_particles, num_dimensions, hidden_nodes,
-                        a_i, b_j, W_ij, sigma)
-    hamilton = Hamiltonian(gamma, omega, wave)
-    met = Metropolis(monte_carlo_cycles, step_metropolis, step_importance,
-                     num_particles, num_dimensions, wave, hamilton)
+
+    param_a = a_i
+    param_b = b_j
+    param_W = W_ij
     for i in range(gradient_iterations):
 
-        new_energy, new_positions, count = met.metropolis()
-        # Run with analytical expression for quantum force = true
-        d_El_a, d_El_b, d_El_W = met.run_importance_sampling('true')
+        # Call system class in order to set new parameters
+        wave = Wavefunction(num_particles, num_dimensions, hidden_nodes,
+                            param_a, param_b, param_W, sigma)
+        hamilton = Hamiltonian(gamma, omega, wave)
+        met = Metropolis(monte_carlo_cycles, step_metropolis, step_importance,
+                         num_particles, num_dimensions, wave, hamilton)
 
-        new_a, new_b, new_W = opt.gradient_descent(a_i, b_j, W_ij, d_El_a,
-                                                   d_El_b, d_El_W)
+        d_El = met.run_metropolis()
+        # Run with analytical expression for quantum force = true
+        # d_El = met.run_importance_sampling('true')
+        d_El_a = d_El[0]
+        d_El_b = d_El[1]
+        d_El_W = d_El[2]
+        new_a, new_b, new_W = opt.gradient_descent(param_a, param_b, param_W,
+                                                   d_El_a, d_El_b, d_El_W)
+
+        print 'new alpha = ', new_a
+        print 'number of gradien descent runs = ', i
+        param_a = new_a
+        param_b = new_b
+        param_W = new_W
 
 
 """case(monte_carlo_cycles, number of particles,
