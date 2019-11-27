@@ -98,23 +98,27 @@ class Metropolis:
 
         return positions
 
-    def gibbs_step(positions, a, b, W):
+    def gibbs_step(self, positions):
         """Calculate new Gibbs step."""
-        """Fix"""
-        hidden_nodes = 3
-        visible_nodes = 4
-        h_j = np.zeros(hidden_nodes)
-        W = np.zeros((visible_nodes, hidden_nodes))
-        X_i = positions
+
+        h_j = np.zeros(self.w.N)
         sigma = 1
         sigma2 = 1
 
-        for j in range(hidden_nodes):
-            h_j[j] = 1/(1 + math.exp(-b[j] - np.sum(X_i % W[:, j])/sigma2))
+        for j in range(self.w.N):
+            sum = 0.0
+            for i in range(self.w.M):
+                sum += positions[i]*self.w.W[i, j]/sigma2
 
-        for i in range(visible_nodes):
-            mu = a[i] + math.sum(W[i, :]*h_j)
-            X_i[i] = np.random.normal(mu, sigma)
+            h_j[j] = 1/(1 + math.exp(-self.w.b[j] - sum))
+
+        for i in range(self.w.M):
+            sum = 0.0
+            for j in range(self.w.N):
+                sum += self.w.W[i, j]*h_j[j]
+
+            mu = self.w.a[i] + sum
+            positions[i] = np.random.normal(mu, sigma)
 
     def run_metropolis(self):
         """Run the naive metropolis algorithm."""
