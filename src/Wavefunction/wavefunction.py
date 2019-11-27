@@ -1,5 +1,6 @@
 """Wavefunction class."""
 import math
+import numpy as np
 
 
 class Wavefunction:
@@ -101,3 +102,9 @@ class Wavefunction:
         acceptance_ratio = numerator/denominator
 
         return acceptance_ratio
+
+    def sigmoid(self, positions):
+        """Calculate the sigmoid function given positions"""
+        # sigmoid = np.zeros(self.M)
+        sigmoid = 1/(1 + np.exp(positions))
+        return sigmoid
