@@ -24,18 +24,15 @@ class Wavefunction:
         in the probability term or in the energy term where its derivative
         equals zero."""
 
-        Z = 1.0
-        rbm_visible = rbm_connected = 0.0
-        rbm_hidden = 1.0
+        sum1 = sum2 = 0.0
+        prod = 1.0
         for i in range(self.M):
-            rbm_visible += ((positions[i] - self.a[i])**2)/(2*self.sigma2)
+            sum1 += ((positions[i] - self.a[i])**2)/(2*self.sigma2)
+            for j in range(self.N):
+                sum2 += positions[i]*self.W[i, j]/self.sigma2
+                prod *= 1 + math.exp(self.b[j]) + sum2
 
-        for j in range(self.N):
-            for i in range(self.M):
-                rbm_connected += positions[i]*self.W[i, j]/self.sigma2
-            rbm_hidden *= 1 + math.exp(self.b[j]) + rbm_connected
-
-        wavefunction = (1/Z)*math.exp(rbm_visible)*rbm_hidden
+        wavefunction = math.exp(sum1)*prod
         return wavefunction
 
     def gradients_wavefunction(self, positions):
