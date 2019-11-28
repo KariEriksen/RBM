@@ -8,7 +8,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from metropolis import Metropolis # noqa: 401
 from optimizer import Optimizer # noqa: 401
 from Hamiltonian.hamiltonian import Hamiltonian # noqa: 401
-from Hamiltonian.non_interaction import Non_Interaction # noqa: 401
 from Wavefunction.wavefunction import Wavefunction # noqa: 401
 from sampler import Sampler # noqa: 401
 

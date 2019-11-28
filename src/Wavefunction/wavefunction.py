@@ -28,6 +28,9 @@ class Wavefunction:
         sum1 = sum2 = 0.0
         prod = 1.0
         for i in range(self.M):
+            print positions
+            print self.a
+            kdkd
             sum1 += ((positions[i] - self.a[i])**2)/(2*self.sigma2)
         for j in range(self.N):
             for i in range(self.M):
@@ -95,8 +98,8 @@ class Wavefunction:
         """Wave function with new positions squared divided by."""
         """wave equation with old positions squared"""
 
-        wf_old = self.s.wavefunction(positions)
-        wf_new = self.s.wavefunction(new_positions)
+        wf_old = self.wavefunction(positions)
+        wf_new = self.wavefunction(new_positions)
         numerator = wf_new*wf_new
         denominator = wf_old*wf_old
         acceptance_ratio = numerator/denominator
