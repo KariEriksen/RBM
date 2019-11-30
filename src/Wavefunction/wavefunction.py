@@ -28,9 +28,6 @@ class Wavefunction:
         sum1 = sum2 = 0.0
         prod = 1.0
         for i in range(self.M):
-            print positions
-            print self.a
-            kdkd
             sum1 += ((positions[i] - self.a[i])**2)/(2*self.sigma2)
         for j in range(self.N):
             for i in range(self.M):

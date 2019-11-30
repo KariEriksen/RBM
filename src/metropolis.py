@@ -29,11 +29,13 @@ class Metropolis:
 
         r = random.random()*random.choice((-1, 1))
         # Pick a random particle
-        random_index = random.randrange(len(self.num_p))
+        random_index = random.randrange(self.num_p)
+        j = random_index*self.num_d
         new_positions = np.array(positions)
-        new_random_position = new_positions[random_index, :]
-        # Suggest a new move
-        new_positions[random_index, :] = new_random_position + r*self.delta_R
+        for i in range(self.num_d):
+            # Suggest a new move
+            new_positions[j+i] += r*self.delta_R
+
         acceptance_ratio = self.w.wavefunction_ratio(positions, new_positions)
         epsilon = np.random.sample()
 
