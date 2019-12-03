@@ -31,9 +31,9 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
     """Run Restricted Boltzmann Machine."""
 
     visible_nodes = num_particles*num_dimensions
-    a_i = np.zeros((1, visible_nodes))
-    b_j = np.zeros((1, hidden_nodes))
-    W_ij = np.zeros((visible_nodes, hidden_nodes))
+    a_i = np.random.rand(visible_nodes)
+    b_j = np.random.rand(hidden_nodes)
+    W_ij = np.random.rand(visible_nodes, hidden_nodes)
     sigma = 1.0
     omega = 1.0
     gamma = 1.0

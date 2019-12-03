@@ -17,8 +17,8 @@ class Hamiltonian:
         Xi = 0.0
         fd, sd = self.w.gradients_wavefunction(positions)
         interaction = self.interaction(positions)
-        for i in range(self.s.M):
-            Xi += self.positions[i]
+        for i in range(self.w.M):
+            Xi += positions[i]
         local_energy = 0.5*(-fd*fd + sd + self.omega2*Xi) + interaction
 
         return local_energy
@@ -29,8 +29,8 @@ class Hamiltonian:
         Xi = 0.0
         fd, sd = self.w.quandratic_gradients_wavefunction(positions)
         interaction = self.interaction(positions)
-        for i in range(self.s.M):
-            Xi += self.positions[i]
+        for i in range(self.w.M):
+            Xi += positions[i]
         local_energy = 0.5*(-fd*fd + sd + self.omega2*Xi) + interaction
 
         return local_energy

@@ -44,22 +44,22 @@ class Wavefunction:
         first_derivative = 0.0
         second_derivative = 0.0
 
-        for i in range(self.s.M):
+        for i in range(self.M):
             sum2 = 0.0
             sum3 = 0.0
-            for j in range(self.s.N):
+            for j in range(self.N):
                 sum1 = 0.0
-                for k in range(self.s.M):
-                    sum1 += self.positions[k]*self.s.W[k, j]/self.s.sigma2
+                for k in range(self.M):
+                    sum1 += positions[k]*self.W[k, j]/self.sigma2
 
-                exponent = math.exp(-self.s.b[j] - sum1)
-                sum2 += self.s.W[i, j]/(1 + exponent)
+                exponent = math.exp(-self.b[j] - sum1)
+                sum2 += self.W[i, j]/(1 + exponent)
                 sum3 += sum2*sum2*exponent
 
-            first_derivative += (-(self.positions[i] - self.a[i])/self.s.sigma2
-                                 + (1/self.s.sigma2)*sum2)
+            first_derivative += (-(positions[i] - self.a[i])/self.sigma2
+                                 + (1/self.sigma2)*sum2)
 
-            second_derivative += -1/self.s.sigma2 + (1/self.s.sigma4)*sum3
+            second_derivative += -1/self.sigma2 + (1/self.sigma4)*sum3
 
         return first_derivative, second_derivative
 

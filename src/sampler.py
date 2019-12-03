@@ -13,12 +13,12 @@ class Sampler:
         self.local_energy = 0.0
         self.alpha_gradient_wf = 0.0
         self.accumulate_energy = 0.0
-        self.accumulate_psi_term = np.array((1, 3))
-        self.accumulate_both = np.array((1, 3))
+        self.accumulate_psi_term = np.zeros(3)
+        self.accumulate_both = np.zeros(3)
         self.expec_val_energy = 0.0
-        self.expec_val_psi = np.array((1, 3))
-        self.expec_val_both = np.array((1, 3))
-        self.derivative_energy = np.array((1, 3))
+        self.expec_val_psi = np.zeros(3)
+        self.expec_val_both = np.zeros(3)
+        self.derivative_energy = np.zeros(3)
 
     def sample_values(self, positions):
         """Get the local energy from Hamiltonian class"""
@@ -46,9 +46,9 @@ class Sampler:
 
     def print_avereges(self):
 
-        print ('deri energy param a = ', self.derivative_energy_a[0])
-        print ('deri energy param b = ', self.derivative_energy_b[1])
-        print ('deri energy param W = ', self.derivative_energy_W[2])
+        print ('deri energy param a = ', self.derivative_energy[0])
+        print ('deri energy param b = ', self.derivative_energy[1])
+        print ('deri energy param W = ', self.derivative_energy[2])
         print ('total energy =  ', self.local_energy)
         # energy/num_particles
         print ('----------------------------')
