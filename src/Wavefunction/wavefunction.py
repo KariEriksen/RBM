@@ -6,11 +6,9 @@ import numpy as np
 class Wavefunction:
     """Contains parameters of system and wave equation."""
 
-    def __init__(self, num_particles, num_dimensions, N, a, b, W, sigma):
+    def __init__(self, M, N, a, b, W, sigma):
         """Instance of class."""
-        self.num_p = num_particles
-        self.num_d = num_dimensions
-        self.M = self.num_p*self.num_d
+        self.M = M
         self.N = N
         self.a = a
         self.b = b
