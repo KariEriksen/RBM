@@ -34,6 +34,7 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
     a_i = np.random.rand(visible_nodes)
     b_j = np.random.rand(hidden_nodes)
     W_ij = np.random.rand(visible_nodes, hidden_nodes)
+
     sigma = 1.0
     omega = 1.0
     gamma = 1.0
@@ -44,7 +45,7 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
     for i in range(gradient_iterations):
 
         # Call system class in order to set new parameters
-        wave = Wavefunction(num_particles, num_dimensions, hidden_nodes,
+        wave = Wavefunction(visible_nodes, hidden_nodes,
                             param_a, param_b, param_W, sigma)
         hamilton = Hamiltonian(gamma, omega, wave)
         met = Metropolis(monte_carlo_cycles, step_metropolis, step_importance,

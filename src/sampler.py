@@ -11,14 +11,23 @@ class Sampler:
         self.h = hamiltonian
 
         self.local_energy = 0.0
-        self.alpha_gradient_wf = 0.0
         self.accumulate_energy = 0.0
-        self.accumulate_psi_term = np.zeros(3)
-        self.accumulate_both = np.zeros(3)
+        self.accumulate_psi_term_a = np.array()
+        self.accumulate_psi_term_b = np.array()
+        self.accumulate_psi_term_W = np.array()
+        self.accumulate_both_a = np.array()
+        self.accumulate_both_b = np.array()
+        self.accumulate_both_W = np.array()
         self.expec_val_energy = 0.0
-        self.expec_val_psi = np.zeros(3)
-        self.expec_val_both = np.zeros(3)
-        self.derivative_energy = np.zeros(3)
+        self.expec_val_psi_a = np.array()
+        self.expec_val_psi_b = np.array()
+        self.expec_val_psi_W = np.array()
+        self.expec_val_both_a = np.array()
+        self.expec_val_both_b = np.array()
+        self.expec_val_both_W = np.array()
+        self.derivative_energy_a = np.array()
+        self.derivative_energy_b = np.array()
+        self.derivative_energy_W = np.array()
 
     def sample_values(self, positions):
         """Get the local energy from Hamiltonian class"""
@@ -26,11 +35,14 @@ class Sampler:
 
         self.local_energy = self.h.local_energy(positions)
         self.accumulate_energy += self.h.local_energy(positions)
-        alpha_gradient_wf = self.w.alpha_gradient_wavefunction(positions)
+        gradient_wf_a = self.w.gradient_wavefunction_a(positions)
+        gradient_wf_b = self.w.gradient_wavefunction_b(positions)
+        gradient_wf_W = self.w.gradient_wavefunction_W(positions)
 
-        for i in range(3):
-            self.accumulate_psi_term[i] += alpha_gradient_wf[i]
-            self.accumulate_both[i] += alpha_gradient_wf[i]*self.local_energy
+        self.accumulate_psi_term_a += gradient_wf_a
+        self.accumulate_psi_term_b += gradient_wf_b
+        self.accumulate_psi_term_W += gradient_wf_W
+        self.accumulate_both += gradient_wf_a*self.local_energy
 
     def average_values(self, monte_carlo_cycles):
         """Calculate average values"""
@@ -44,6 +56,7 @@ class Sampler:
         for i in range(3):
             self.expec_val_psi[i] = self.accumulate_psi_term[i]/mcc
             self.expec_val_both[i] = self.accumulate_both[i]/mcc
+            derivative_energy_a = self.derivative_energy[i]
             self.derivative_energy[i] = 2*(self.expec_val_both[i] -
                                            (self.expec_val_psi[i] *
                                             self.expec_val_energy))

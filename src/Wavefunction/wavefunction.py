@@ -71,23 +71,54 @@ class Wavefunction:
 
         return first_derivative_gibbs, second_derivative_gibbs
 
-    def alpha_gradient_wavefunction(self, positions):
+    def gradient_wavefunction_a(self, positions):
         """Return the first derivative of ln of the wave function"""
         """with respect to the variational parameter a, b and W"""
         """This is equivalant to the first derivative of the wave
         function divided by the wave equation"""
 
+        dpsi_da = np.array(self.M)
+
+        for k in range(self.M):
+            dpsi_da[k] = (1/self.sigma2)*(positions[k] - self.a[k])
+
+        return dpsi_da
+
+    def gradient_wavefunction_b(self, positions):
+        """Return the first derivative of ln of the wave function"""
+        """with respect to the variational parameter a, b and W"""
+        """This is equivalant to the first derivative of the wave
+        function divided by the wave equation"""
+
+        dpsi_db = np.array(self.N)
+
+        for n in range(self.N):
+            sum = 0.0
+            for i in range(self.M):
+                sum += positions[i]*self.W[i, n]/self.sigma2
+
+            dpsi_db[n] = 1/(1 + math.exp(-self.b[n] - sum))
+
+        return dpsi_db
+
+    def gradient_wavefunction_W(self, positions):
+        """Return the first derivative of ln of the wave function"""
+        """with respect to the variational parameter a, b and W"""
+        """This is equivalant to the first derivative of the wave
+        function divided by the wave equation"""
+
+        dpsi_dW = np.array((self.M, self.N))
+
         for k in range(self.M):
             for n in range(self.N):
                 sum = 0.0
-        for i in range(self.M):
-            sum += positions[i]*self.W[i, n]/self.sigma2
+            for i in range(self.M):
+                sum += positions[i]*self.W[i, n]/self.sigma2
 
-        dpsi_da = (1/self.sigma2)*(positions[k] - self.a[k])
-        dpsi_db = 1/(1 + math.exp(-self.b[n] - sum))
-        dpsi_dW = (positions[k]/self.sigma2)*dpsi_db
+            term = 1/(1 + math.exp(-self.b[n] - sum))
+            dpsi_dW[k, n] = (positions[k]/self.sigma2)*term
 
-        return dpsi_da, dpsi_db, dpsi_dW
+        return dpsi_dW
 
     def wavefunction_ratio(self, positions, new_positions):
         """Wave function with new positions squared divided by."""
