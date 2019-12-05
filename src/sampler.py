@@ -33,10 +33,14 @@ class Sampler:
             self.accumulate_both[i] += alpha_gradient_wf[i]*self.local_energy
 
     def average_values(self, monte_carlo_cycles):
+        """Calculate average values"""
 
         mcc = monte_carlo_cycles
         self.expec_val_energy = self.accumulate_energy/mcc
 
+        # for all variational parameters
+        # calcualte the expectation values and the derivative of
+        # the energy
         for i in range(3):
             self.expec_val_psi[i] = self.accumulate_psi_term[i]/mcc
             self.expec_val_both[i] = self.accumulate_both[i]/mcc
