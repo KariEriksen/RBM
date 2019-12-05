@@ -18,7 +18,6 @@ class Metropolis:
         self.delta_t = delta_t
         self.num_p = num_particles
         self.num_d = num_dimensions
-        # self.positions = positions
         self.w = wavefunction
         self.h = hamiltonian
         self.c = 0.0
@@ -139,6 +138,8 @@ class Metropolis:
             sampler.sample_values(positions)
         sampler.average_values(self.mc_cycles)
         print 'accepted states = ', self.c
+
+        # the derivative_energy is an array
         d_El = sampler.derivative_energy
         sampler.print_avereges()
         return d_El
@@ -157,6 +158,8 @@ class Metropolis:
             sampler.sample_values(positions)
         sampler.average_values(self.mc_cycles)
         print 'accepted states = ', self.c
+
+        # the derivative_energy is an array
         d_El = sampler.derivative_energy
         sampler.print_avereges()
         return d_El
@@ -176,6 +179,8 @@ class Metropolis:
             sampler.sample_values(positions)
         sampler.average_values(self.mc_cycles)
         print 'accepted states = ', self.c
+
+        # the derivative_energy is an array
         d_El = sampler.derivative_energy
         sampler.print_avereges()
         return d_El
