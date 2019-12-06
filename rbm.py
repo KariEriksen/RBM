@@ -60,8 +60,8 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
         new_a, new_b, new_W = opt.gradient_descent(param_a, param_b, param_W,
                                                    d_El_a, d_El_b, d_El_W)
 
-        print 'new alpha = ', new_a
-        print 'number of gradien descent runs = ', i
+        print ('new alpha = ', new_a)
+        print ('number of gradien descent runs = ', i)
         param_a = new_a
         param_b = new_b
         param_W = new_W
@@ -100,8 +100,8 @@ def weak_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
         new_a, new_b, new_W = opt.gradient_descent(param_a, param_b, param_W,
                                                    d_El_a, d_El_b, d_El_W)
 
-        print 'new alpha = ', new_a
-        print 'number of gradien descent runs = ', i
+        print ('new alpha = ', new_a)
+        print ('number of gradien descent runs = ', i)
         param_a = new_a
         param_b = new_b
         param_W = new_W

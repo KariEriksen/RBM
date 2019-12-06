@@ -77,7 +77,7 @@ class Wavefunction:
         """This is equivalant to the first derivative of the wave
         function divided by the wave equation"""
 
-        dpsi_da = np.array(self.M)
+        dpsi_da = np.zeros(self.M)
 
         for k in range(self.M):
             dpsi_da[k] = (1/self.sigma2)*(positions[k] - self.a[k])
@@ -90,7 +90,7 @@ class Wavefunction:
         """This is equivalant to the first derivative of the wave
         function divided by the wave equation"""
 
-        dpsi_db = np.array(self.N)
+        dpsi_db = np.zeros(self.N)
 
         for n in range(self.N):
             sum = 0.0
@@ -107,7 +107,7 @@ class Wavefunction:
         """This is equivalant to the first derivative of the wave
         function divided by the wave equation"""
 
-        dpsi_dW = np.array((self.M, self.N))
+        dpsi_dW = np.zeros((self.M, self.N))
 
         for k in range(self.M):
             for n in range(self.N):

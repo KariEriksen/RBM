@@ -137,12 +137,14 @@ class Metropolis:
             positions = new_positions
             sampler.sample_values(positions)
         sampler.average_values(self.mc_cycles)
-        print 'accepted states = ', self.c
+        print ('accepted states = ', self.c)
 
         # the derivative_energy is an array
-        d_El = sampler.derivative_energy
+        d_El_a = sampler.derivative_energy_a
+        d_El_b = sampler.derivative_energy_b
+        d_El_W = sampler.derivative_energy_W
         sampler.print_avereges()
-        return d_El
+        return d_El_a, d_El_b, d_El_W
 
     def run_importance_sampling(self, analytic):
         """Run importance algorithm."""
@@ -157,12 +159,14 @@ class Metropolis:
             positions = new_positions
             sampler.sample_values(positions)
         sampler.average_values(self.mc_cycles)
-        print 'accepted states = ', self.c
+        print ('accepted states = ', self.c)
 
         # the derivative_energy is an array
-        d_El = sampler.derivative_energy
+        d_El_a = sampler.derivative_energy_a
+        d_El_b = sampler.derivative_energy_b
+        d_El_W = sampler.derivative_energy_W
         sampler.print_avereges()
-        return d_El
+        return d_El_a, d_El_b, d_El_W
 
     def run_gibbs_sampling(self):
         """Run Gibbs sampling."""
@@ -178,9 +182,11 @@ class Metropolis:
             positions = new_positions
             sampler.sample_values(positions)
         sampler.average_values(self.mc_cycles)
-        print 'accepted states = ', self.c
+        print ('accepted states = ', self.c)
 
         # the derivative_energy is an array
-        d_El = sampler.derivative_energy
+        d_El_a = sampler.derivative_energy_a
+        d_El_b = sampler.derivative_energy_b
+        d_El_W = sampler.derivative_energy_W
         sampler.print_avereges()
-        return d_El
+        return d_El_a, d_El_b, d_El_W
