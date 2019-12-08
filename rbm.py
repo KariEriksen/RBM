@@ -30,6 +30,7 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
                          hidden_nodes):
     """Run Restricted Boltzmann Machine."""
 
+    # Initialize weights and biases
     visible_nodes = num_particles*num_dimensions
     a_i = np.random.rand(visible_nodes)
     b_j = np.random.rand(hidden_nodes)
@@ -60,7 +61,9 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
         new_a, new_b, new_W = opt.gradient_descent(param_a, param_b, param_W,
                                                    d_El_a, d_El_b, d_El_W)
 
-        print ('new alpha = ', new_a)
+        print ('new a parameter = ', new_a)
+        print ('new b parameter = ', new_b)
+        print ('new W parameter = ', new_W)
         print ('number of gradien descent runs = ', i)
         param_a = new_a
         param_b = new_b
@@ -71,10 +74,11 @@ def weak_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
                           hidden_nodes):
     """Run Restricted Boltzmann Machine."""
 
+    # Initialize weights and biases
     visible_nodes = num_particles*num_dimensions
-    a_i = np.zeros((1, visible_nodes))
-    b_j = np.zeros((1, hidden_nodes))
-    W_ij = np.zeros((visible_nodes, hidden_nodes))
+    a_i = np.random.rand(visible_nodes)
+    b_j = np.random.rand(hidden_nodes)
+    W_ij = np.random.rand(visible_nodes, hidden_nodes)
     sigma = 1.0
     omega = 1.0
     gamma = 1.0
@@ -100,7 +104,9 @@ def weak_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
         new_a, new_b, new_W = opt.gradient_descent(param_a, param_b, param_W,
                                                    d_El_a, d_El_b, d_El_W)
 
-        print ('new alpha = ', new_a)
+        print ('new a parameter = ', new_a)
+        print ('new b parameter = ', new_b)
+        print ('new W parameter = ', new_W)
         print ('number of gradien descent runs = ', i)
         param_a = new_a
         param_b = new_b
@@ -110,5 +116,5 @@ def weak_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
 """case(monte_carlo_cycles, number of particles,
         number of dimensions, number of hidden nodes)"""
 
-non_interaction_case(100000, 2, 3, 3)
+non_interaction_case(100000, 1, 2, 3)
 # weak_interaction_case(100000, 2, 3, 3)
