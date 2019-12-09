@@ -97,6 +97,14 @@ class Hamiltonian:
     def interaction(self, positions):
         """Return the interaction between particles"""
 
-        "add interaction"
+        n = self.w.num_d
+        for i in range(self.w.num_p):
+            for j in range(i, self.w.num_p-1):
+                for k in range(self.w.num_d):
+                # ri_minus_rj = np.subtract(positions[i], positions[j+1])
+                    r = 0.0
+                    ri_minus_rj = positions[i+k] - positions[n+j+k]
+                    r += ri_minus_rj**2
+            distance = math.sqrt(r)
 
         return 0

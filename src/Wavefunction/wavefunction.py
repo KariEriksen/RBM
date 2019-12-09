@@ -42,6 +42,9 @@ class Wavefunction:
         first_derivative = 0.0
         second_derivative = 0.0
 
+        # TOMORROW
+        """Is it the weights that are initialized to high?"""
+
         for i in range(self.M):
             sum2 = 0.0
             sum3 = 0.0
@@ -58,7 +61,9 @@ class Wavefunction:
                                  + (1.0/self.sigma2)*sum2)
 
             second_derivative += -1.0/self.sigma2 + (1.0/self.sigma4)*sum3
-
+        # print -first_derivative*first_derivative
+        # print second_derivative
+        # ksk
         return first_derivative, second_derivative
 
     def quandratic_gradients_wavefunction(self, positions):
