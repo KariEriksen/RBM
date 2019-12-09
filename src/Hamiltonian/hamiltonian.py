@@ -21,7 +21,7 @@ class Hamiltonian:
         for i in range(self.w.M):
             Xi += positions[i]
         local_energy = 0.5*(-first_deri*first_deri +
-                            second_deri + self.omega2*Xi) + interaction
+                            second_deri + self.omega2*Xi*Xi) + interaction
 
         return local_energy
 
@@ -33,7 +33,7 @@ class Hamiltonian:
         interaction = self.interaction(positions)
         for i in range(self.w.M):
             Xi += positions[i]
-        local_energy = 0.5*(-fd*fd + sd + self.omega2*Xi) + interaction
+        local_energy = 0.5*(-fd*fd + sd + self.omega2*Xi*Xi) + interaction
 
         return local_energy
 
