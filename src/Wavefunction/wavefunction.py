@@ -33,7 +33,7 @@ class Wavefunction:
             sum2 = self.b[j] + sum2
             prod *= 1 + math.exp(sum2)
 
-        wavefunction = math.exp(sum1)*prod
+        wavefunction = math.exp(-sum1)*prod
         return wavefunction
 
     def gradients_wavefunction(self, positions):
