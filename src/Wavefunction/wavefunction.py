@@ -51,13 +51,13 @@ class Wavefunction:
                     sum1 += positions[k]*self.W[k, j]/self.sigma2
 
                 exponent = math.exp(-self.b[j] - sum1)
-                sum2 += self.W[i, j]/(1 + exponent)
+                sum2 += self.W[i, j]/(1.0 + exponent)
                 sum3 += sum2*sum2*exponent
 
             first_derivative += (-(positions[i] - self.a[i])/self.sigma2
-                                 + (1/self.sigma2)*sum2)
+                                 + (1.0/self.sigma2)*sum2)
 
-            second_derivative += -1/self.sigma2 + (1/self.sigma4)*sum3
+            second_derivative += -1.0/self.sigma2 + (1.0/self.sigma4)*sum3
 
         return first_derivative, second_derivative
 

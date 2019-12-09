@@ -35,6 +35,8 @@ class Sampler:
 
         self.local_energy = self.h.local_energy(positions)
         self.accumulate_energy += self.h.local_energy(positions)
+        # self.local_energy = self.h.local_energy_numerical(positions)
+        # self.accumulate_energy += self.h.local_energy_numerical(positions)
         gradient_wf_a = np.zeros(self.w.M)
         gradient_wf_b = np.zeros(self.w.N)
         gradient_wf_W = np.zeros((self.w.M, self.w.N))
@@ -78,9 +80,9 @@ class Sampler:
 
     def print_avereges(self):
 
-        print ('deri energy param a = ', self.derivative_energy_a)
-        print ('deri energy param b = ', self.derivative_energy_b)
-        print ('deri energy param W = ', self.derivative_energy_W)
-        print ('total energy =  ', self.local_energy)
+        print 'deri energy param a = ', self.derivative_energy_a
+        print 'deri energy param b = ', self.derivative_energy_b
+        print 'deri energy param W = ', self.derivative_energy_W
+        print '\033[1m total energy \033[0m =  ', self.local_energy
         # energy/num_particles
-        print ('----------------------------')
+        print '----------------------------'
