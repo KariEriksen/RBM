@@ -28,7 +28,7 @@ class Hamiltonian:
         local_energy = 0.5*(-first_deri*first_deri +
                             second_deri + self.omega2*Xi)
 
-        if self.interaction:
+        if self.interaction == 'true':
             local_energy += interaction_energy
         else:
             None
