@@ -48,8 +48,9 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
         # Call system class in order to set new parameters
         wave = Wavefunction(visible_nodes, hidden_nodes,
                             param_a, param_b, param_W, sigma)
+        # Run with interaction = true in Hamiltonian()
         hamilton = Hamiltonian(gamma, omega, num_dimensions, num_particles,
-                               wave, 'true')
+                               wave, 'false')
         met = Metropolis(monte_carlo_cycles, step_metropolis, step_importance,
                          num_particles, num_dimensions, wave, hamilton)
 
