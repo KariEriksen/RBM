@@ -1,27 +1,37 @@
 """Hamiltonian class."""
+import math
 import numpy as np
 
 
 class Hamiltonian:
     """Calculate variables regarding energy of given system."""
 
-    def __init__(self, gamma, omega, wavefunction):
+    def __init__(self, gamma, omega, num_d, num_p, wavefunction, interaction):
         """Instance of class."""
         self.gamma = gamma
         self.omega = omega
         self.omega2 = omega*omega
+        self.num_d = num_d
+        self.num_p = num_p
         self.w = wavefunction
+        self.interaction = interaction
 
     def local_energy(self, positions):
         """Return the local energy."""
 
         Xi = 0.0
         first_deri, second_deri = self.w.gradients_wavefunction(positions)
-        interaction = self.interaction(positions)
+        interaction_energy = self.interaction_energy(positions)
         for i in range(self.w.M):
-            Xi += positions[i]
+            Xi += positions[i]*positions[i]
+
         local_energy = 0.5*(-first_deri*first_deri +
-                            second_deri + self.omega2*Xi*Xi) + interaction
+                            second_deri + self.omega2*Xi)
+
+        if self.interaction:
+            local_energy += interaction_energy
+        else:
+            None
 
         return local_energy
 
@@ -29,11 +39,17 @@ class Hamiltonian:
         """Return the local energy for gibbs sampling."""
 
         Xi = 0.0
+        # quandratic_gradients_wavefunction returns the gradients times 0.5
         fd, sd = self.w.quandratic_gradients_wavefunction(positions)
-        interaction = self.interaction(positions)
+        interaction_energy = self.interaction_energy(positions)
         for i in range(self.w.M):
-            Xi += positions[i]
-        local_energy = 0.5*(-fd*fd + sd + self.omega2*Xi*Xi) + interaction
+            Xi += positions[i]*positions[i]
+        local_energy = 0.5*(-fd*fd + sd + self.omega2*Xi)
+
+        if self.interaction:
+            local_energy += interaction_energy
+        else:
+            None
 
         return local_energy
 
@@ -43,10 +59,10 @@ class Hamiltonian:
 
         Xi = 0.0
         laplacian = self.laplacian_numerical(positions)
-        interaction = self.interaction(positions)
+        interaction_energy = self.interaction_energy(positions)
         for i in range(self.w.M):
             Xi += positions[i]
-        local_energy = -0.5*laplacian + self.omega2*Xi*Xi + interaction
+        local_energy = -0.5*laplacian + self.omega2*Xi*Xi + interaction_energy
 
         return local_energy
 
@@ -94,17 +110,19 @@ class Hamiltonian:
         laplacian = (psi_moved - psi_current)/(step*step)
         return laplacian
 
-    def interaction(self, positions):
+    def interaction_energy(self, positions):
         """Return the interaction between particles"""
 
-        n = self.w.num_d
-        for i in range(self.w.num_p):
-            for j in range(i, self.w.num_p-1):
-                for k in range(self.w.num_d):
-                # ri_minus_rj = np.subtract(positions[i], positions[j+1])
-                    r = 0.0
-                    ri_minus_rj = positions[i+k] - positions[n+j+k]
-                    r += ri_minus_rj**2
-            distance = math.sqrt(r)
+        n = self.num_d
+        interaction = 0.0
+        for i in range(self.num_p):
+            for j in range(i, self.num_p-1):
+                r = 0.0
+                for k in range(self.num_d):
+                    # ri_minus_rj = np.subtract(positions[i], positions[j+1])
 
-        return 0
+                    ri_minus_rj = positions[(i*n)+k] - positions[((j+1)*n)+k]
+                    r += ri_minus_rj**2
+                interaction += 1.0/math.sqrt(r)
+
+        return interaction
