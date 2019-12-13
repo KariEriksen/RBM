@@ -35,7 +35,7 @@ def test_local_energy_2d_2p():
         energy = 0.5*(-(fd*fd) + sd + omega*omega*x)
 
         assert energy == pytest.approx(hamilton.local_energy(positions),
-                                      abs=1e-14)
+                                       abs=1e-14)
 
 
 def test_local_energy_3d_2p():
@@ -64,15 +64,18 @@ def test_local_energy_3d_2p():
         energy = 0.5*(-fd*fd + sd + omega*omega*x)
 
         assert energy == pytest.approx(hamilton.local_energy(positions),
-                                      abs=1e-14)
+                                       abs=1e-14)
+
 
 def test_local_energy_gibbs_2d_2p():
 
     assert 0 == 0
 
+
 def test_local_energy_gibbs_3d_2p():
 
     assert 0 == 0
+
 
 def test_interaction_energy_3d_3p():
 
