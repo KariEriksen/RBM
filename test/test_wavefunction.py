@@ -66,7 +66,7 @@ def test_gradients_wavefunction_2d_2p():
             for i in range(M):
                 sum3 += W[i, j]
 
-        wave_function = term1*prod
+        # wave_function = term1*prod
 
         # assert wave_function == pytest.approx(wave.wavefunction(positions),
         #                                       abs=1e-10)
