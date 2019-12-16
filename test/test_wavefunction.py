@@ -44,7 +44,33 @@ def test_wavefunction_3d_2p():
 
 def test_gradients_wavefunction_2d_2p():
 
-    assert 0 == 0
+    num_p = 2
+    num_d = 2
+    M = num_p*num_d
+    N = 3
+    sigma = 1.0
+
+    for _ in range(50):
+        a = np.random.uniform(-2, 2, M)
+        b = np.random.uniform(-2, 2, N)
+        W = np.random.uniform(-2, 2, (M, N))
+        wave = Wavefunction(M, N, a, b, W, sigma)
+        positions = np.random.uniform(-1, 1, M)
+        sum1 = np.subtract(positions, a)
+        sum1 = -np.sum(sum1*sum1)/(2*sigma*sigma)
+        sum2 = 0.0
+        sum3 = 0.0
+        for j in range(N):
+            sum2 += np.dot(positions, W[:, j])/(sigma*sigma)
+            sum3 += (1 + math.exp(b[j] + sum2))
+            for i in range(M):
+                sum3 += W[i, j]
+
+        wave_function = term1*prod
+
+        # assert wave_function == pytest.approx(wave.wavefunction(positions),
+        #                                       abs=1e-10)
+        assert 0 == 0
 
 
 def test_gradients_wavefunction_3d_2p():
