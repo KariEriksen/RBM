@@ -60,17 +60,21 @@ def test_gradients_wavefunction_2d_2p():
         sum1 = -np.sum(sum1*sum1)/(2*sigma*sigma)
         sum2 = 0.0
         sum3 = 0.0
-        for j in range(N):
-            sum2 += np.dot(positions, W[:, j])/(sigma*sigma)
-            sum3 += (1 + math.exp(b[j] + sum2))
-            for i in range(M):
-                sum3 += W[i, j]
+        sum4 = 0.0
+        for k in range(M):
+            for j in range(N):
+                for i in range(M):
+                    sum2 += np.dot(positions, W[:, j])/(sigma*sigma)
+                exponent = math.exp(b[j] + sum2)
+                sum3 += W[k, j]/(1 + exponent)
+                sum4 += exponent*(W[k, j]/(1 + exponent))**2
 
-        # wave_function = term1*prod
 
-        # assert wave_function == pytest.approx(wave.wavefunction(positions),
-        #                                       abs=1e-10)
-        assert 0 == 0
+        first_derivative = sum1 + (1/sigma*sigma)*sum3
+        second_derivative = -1/(sigma*sigma) + 1/((sigma*sigma)**2)*sum4
+
+        assert first_derivative, second_derivative == pytest.approx(wave.wavefunction(positions),
+                                              abs=1e-10)
 
 
 def test_gradients_wavefunction_3d_2p():
@@ -90,7 +94,22 @@ def test_quandratic_gradients_wavefunction_3d_2p():
 
 def test_gradient_wavefunction_a_2d_2p():
 
-    assert 0 == 0
+    num_p = 2
+    num_d = 2
+    M = num_p*num_d
+    N = 3
+    sigma = 1.0
+
+    for _ in range(50):
+        a = np.random.uniform(-2, 2, M)
+        b = np.random.uniform(-2, 2, N)
+        W = np.random.uniform(-2, 2, (M, N))
+        wave = Wavefunction(M, N, a, b, W, sigma)
+        position = np.random.uniform(-1, 1, M)
+        gradient = np.subtract(position, a)/(2*sigma*sigma)
+
+        assert gradient == pytest.approx(wave.gradient_wavefunction_a(position),
+                                         abs=1e-10)
 
 
 def test_gradient_wavefunction_a_3d_2p():
@@ -100,7 +119,27 @@ def test_gradient_wavefunction_a_3d_2p():
 
 def test_gradient_wavefunction_b_2d_2p():
 
-    assert 0 == 0
+    num_p = 2
+    num_d = 2
+    M = num_p*num_d
+    N = 3
+    sigma = 1.0
+
+    for _ in range(50):
+        a = np.random.uniform(-2, 2, M)
+        b = np.random.uniform(-2, 2, N)
+        W = np.random.uniform(-2, 2, (M, N))
+        wave = Wavefunction(M, N, a, b, W, sigma)
+        position = np.random.uniform(-1, 1, M)
+        gradient = np.zeros(N)
+        for j in range(N):
+            term = np.dot(position, W[:, j])/(sigma*sigma)
+            gradient[j] = 1/(1 + math.exp(-b[j] - term))
+
+        gradient = 0.5*gradient
+
+        assert gradient == pytest.approx(wave.gradient_wavefunction_b(position),
+                                         abs=1e-10)
 
 
 def test_gradient_wavefunction_b_3d_2p():
