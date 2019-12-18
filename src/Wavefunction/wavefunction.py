@@ -84,7 +84,7 @@ class Wavefunction:
         dpsi_da = np.zeros(self.M)
 
         for k in range(self.M):
-            dpsi_da[k] = (1/self.sigma2)*(positions[k] - self.a[k])
+            dpsi_da[k] = (1/2*self.sigma2)*(positions[k] - self.a[k])
 
         return dpsi_da
 
