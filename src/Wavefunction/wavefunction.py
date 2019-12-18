@@ -102,6 +102,7 @@ class Wavefunction:
                 sum += positions[i]*self.W[i, n]/self.sigma2
 
             dpsi_db[n] = 1/(1 + math.exp(-self.b[n] - sum))
+        dpsi_db = 0.5*dpsi_db
 
         return dpsi_db
 
