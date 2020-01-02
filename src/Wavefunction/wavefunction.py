@@ -121,7 +121,7 @@ class Wavefunction:
                     sum += positions[i]*self.W[i, n]/self.sigma2
 
                 term = 1/(1 + math.exp(-self.b[n] - sum))
-                dpsi_dW[k, n] = (positions[k]/self.sigma2)*term
+                dpsi_dW[k, n] = term*positions[k]/(2*self.sigma2)
 
         return dpsi_dW
 
