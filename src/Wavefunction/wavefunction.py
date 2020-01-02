@@ -70,8 +70,9 @@ class Wavefunction:
         """quadratic wave function"""
         """Used in Gibbs sampling"""
 
-        first_derivative_gibbs = 0.5*self.derivatives_wavefunction[0]
-        second_derivative_gibbs = 0.5*self.derivatives_wavefunction[1]
+        first, second = self.gradients_wavefunction(positions)
+        first_derivative_gibbs = 0.5*first
+        second_derivative_gibbs = 0.5*second
 
         return first_derivative_gibbs, second_derivative_gibbs
 

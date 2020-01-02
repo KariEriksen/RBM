@@ -130,7 +130,7 @@ class Metropolis:
         # Initialize the posistions for each new Monte Carlo run
         positions = np.random.rand(self.num_p*self.num_d)
         # Initialize sampler method for each new Monte Carlo run
-        sampler = Sampler(self.w, self.h)
+        sampler = Sampler(self.w, self.h, 'false')
 
         for i in range(self.mc_cycles):
             new_positions = self.metropolis_step(positions)
@@ -152,7 +152,7 @@ class Metropolis:
         # Initialize the posistions for each new Monte Carlo run
         positions = np.random.rand(self.num_p*self.num_d)
         # Initialize sampler method for each new Monte Carlo run
-        sampler = Sampler(self.w, self.h)
+        sampler = Sampler(self.w, self.h, 'false')
 
         for i in range(self.mc_cycles):
             new_positions = self.importance_sampling_step(positions, analytic)
@@ -175,7 +175,7 @@ class Metropolis:
         # Initialize the posistions for each new Monte Carlo run
         positions = np.random.rand(self.num_p*self.num_d)
         # Initialize sampler method for each new Monte Carlo run
-        sampler = Sampler(self.w, self.h)
+        sampler = Sampler(self.w, self.h, 'true')
 
         for i in range(self.mc_cycles):
             new_positions = self.gibbs_step(positions)

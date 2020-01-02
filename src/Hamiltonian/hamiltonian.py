@@ -30,6 +30,7 @@ class Hamiltonian:
 
         if self.interaction == 'true':
             local_energy += interaction_energy
+
         else:
             None
 
@@ -46,7 +47,7 @@ class Hamiltonian:
             Xi += positions[i]*positions[i]
         local_energy = 0.5*(-fd*fd + sd + self.omega2*Xi)
 
-        if self.interaction:
+        if self.interaction == 'true':
             local_energy += interaction_energy
         else:
             None

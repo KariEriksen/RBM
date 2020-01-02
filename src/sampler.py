@@ -5,10 +5,11 @@ import numpy as np
 class Sampler:
     """Calculate variables regarding energy of given wavefunction."""
 
-    def __init__(self, wavefunction, hamiltonian):
+    def __init__(self, wavefunction, hamiltonian, gibbs):
         """Instance of class."""
         self.w = wavefunction
         self.h = hamiltonian
+        self.gibbs = gibbs
 
         self.local_energy = 0.0
         self.accumulate_energy = 0.0
@@ -33,8 +34,12 @@ class Sampler:
         """Get the local energy from Hamiltonian class"""
         """Sample important values"""
 
-        self.local_energy = self.h.local_energy(positions)
-        self.accumulate_energy += self.h.local_energy(positions)
+        if self.gibbs == 'true':
+            self.local_energy = self.h.local_energy_gibbs(positions)
+            self.accumulate_energy += self.h.local_energy_gibbs(positions)
+        else:
+            self.local_energy = self.h.local_energy(positions)
+            self.accumulate_energy += self.h.local_energy(positions)
         # self.local_energy = self.h.local_energy_numerical(positions)
         # self.accumulate_energy += self.h.local_energy_numerical(positions)
         gradient_wf_a = np.zeros(self.w.M)
