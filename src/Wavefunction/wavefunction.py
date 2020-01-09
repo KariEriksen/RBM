@@ -44,19 +44,19 @@ class Wavefunction:
         # TOMORROW
         """Is it the weights that are initialized to high?"""
 
-        for i in range(self.M):
+        for k in range(self.M):
             sum2 = 0.0
             sum3 = 0.0
             for j in range(self.N):
                 sum1 = 0.0
-                for k in range(self.M):
-                    sum1 += positions[k]*self.W[k, j]/self.sigma2
+                for i in range(self.M):
+                    sum1 += positions[i]*self.W[i, j]/self.sigma2
 
                 exponent = math.exp(-self.b[j] - sum1)
-                sum2 += self.W[i, j]/(1.0 + exponent)
+                sum2 += self.W[k, j]/(1.0 + exponent)
                 sum3 += sum2*sum2*exponent
 
-            first_derivative += (-(positions[i] - self.a[i])/self.sigma2
+            first_derivative += (-(positions[k] - self.a[k])/self.sigma2
                                  + (1.0/self.sigma2)*sum2)
 
             second_derivative += -1.0/self.sigma2 + (1.0/self.sigma4)*sum3
