@@ -54,9 +54,10 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
         met = Metropolis(monte_carlo_cycles, step_metropolis, step_importance,
                          num_particles, num_dimensions, wave, hamilton)
 
-        d_El = met.run_metropolis()
+        # d_El = met.run_metropolis()
         # Run with analytical expression for quantum force = true
         # d_El = met.run_importance_sampling('true')
+        d_El = met.run_gibbs_sampling()
         d_El_a = d_El[0]
         d_El_b = d_El[1]
         d_El_W = d_El[2]

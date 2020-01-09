@@ -5,36 +5,16 @@ import numpy as np
 class Sampler:
     """Calculate variables regarding energy of given wavefunction."""
 
-    def __init__(self, wavefunction, hamiltonian, gibbs):
+    def __init__(self, wavefunction, hamiltonian):
         """Instance of class."""
         self.w = wavefunction
         self.h = hamiltonian
-        self.gibbs = gibbs
 
-        self.local_energy = 0.0
-        self.accumulate_energy = 0.0
-        self.accumulate_psi_term_a = np.zeros(self.w.M)
-        self.accumulate_psi_term_b = np.zeros(self.w.N)
-        self.accumulate_psi_term_W = np.zeros((self.w.M, self.w.N))
-        self.accumulate_both_a = np.zeros(self.w.M)
-        self.accumulate_both_b = np.zeros(self.w.N)
-        self.accumulate_both_W = np.zeros((self.w.M, self.w.N))
-        self.expec_val_energy = 0.0
-        self.expec_val_psi_a = np.zeros(self.w.M)
-        self.expec_val_psi_b = np.zeros(self.w.N)
-        self.expec_val_psi_W = np.zeros((self.w.M, self.w.N))
-        self.expec_val_both_a = np.zeros(self.w.M)
-        self.expec_val_both_b = np.zeros(self.w.N)
-        self.expec_val_both_W = np.zeros((self.w.M, self.w.N))
-        self.derivative_energy_a = np.zeros(self.w.M)
-        self.derivative_energy_b = np.zeros(self.w.N)
-        self.derivative_energy_W = np.zeros((self.w.M, self.w.N))
-
-    def sample_values(self, positions):
+    def sample_values(self, positions, gibbs):
         """Get the local energy from Hamiltonian class"""
         """Sample important values"""
 
-        if self.gibbs == 'true':
+        if gibbs == 'true':
             self.local_energy = self.h.local_energy_gibbs(positions)
             self.accumulate_energy += self.h.local_energy_gibbs(positions)
         else:
@@ -83,11 +63,24 @@ class Sampler:
                                       (self.expec_val_psi_W *
                                        self.expec_val_energy))
 
-    def print_avereges(self):
+    def initialize(self):
+        """Set all sampling values to zero"""
 
-        print 'deri energy param a = ', self.derivative_energy_a
-        print 'deri energy param b = ', self.derivative_energy_b
-        print 'deri energy param W = ', self.derivative_energy_W
-        print '\033[1m total energy \033[0m =  ', self.local_energy
-        # energy/num_particles
-        print '----------------------------'
+        self.local_energy = 0.0
+        self.accumulate_energy = 0.0
+        self.accumulate_psi_term_a = np.zeros(self.w.M)
+        self.accumulate_psi_term_b = np.zeros(self.w.N)
+        self.accumulate_psi_term_W = np.zeros((self.w.M, self.w.N))
+        self.accumulate_both_a = np.zeros(self.w.M)
+        self.accumulate_both_b = np.zeros(self.w.N)
+        self.accumulate_both_W = np.zeros((self.w.M, self.w.N))
+        self.expec_val_energy = 0.0
+        self.expec_val_psi_a = np.zeros(self.w.M)
+        self.expec_val_psi_b = np.zeros(self.w.N)
+        self.expec_val_psi_W = np.zeros((self.w.M, self.w.N))
+        self.expec_val_both_a = np.zeros(self.w.M)
+        self.expec_val_both_b = np.zeros(self.w.N)
+        self.expec_val_both_W = np.zeros((self.w.M, self.w.N))
+        self.derivative_energy_a = np.zeros(self.w.M)
+        self.derivative_energy_b = np.zeros(self.w.N)
+        self.derivative_energy_W = np.zeros((self.w.M, self.w.N))

@@ -22,6 +22,8 @@ class Metropolis:
         self.h = hamiltonian
         self.c = 0.0
 
+        self.s = Sampler(self.w, self.h)
+
     def metropolis_step(self, positions):
         """Calculate new metropolis step."""
         """with brute-force sampling of new positions."""
@@ -130,20 +132,19 @@ class Metropolis:
         # Initialize the posistions for each new Monte Carlo run
         positions = np.random.rand(self.num_p*self.num_d)
         # Initialize sampler method for each new Monte Carlo run
-        sampler = Sampler(self.w, self.h, 'false')
+        self.s.initialize()
 
         for i in range(self.mc_cycles):
             new_positions = self.metropolis_step(positions)
             positions = new_positions
-            sampler.sample_values(positions)
-        sampler.average_values(self.mc_cycles)
-        print ('accepted states = ', self.c)
+            self.s.sample_values(positions, 'false')
+        self.s.average_values(self.mc_cycles)
 
         # the derivative_energy is an array
-        d_El_a = sampler.derivative_energy_a
-        d_El_b = sampler.derivative_energy_b
-        d_El_W = sampler.derivative_energy_W
-        sampler.print_avereges()
+        d_El_a = self.s.derivative_energy_a
+        d_El_b = self.s.derivative_energy_b
+        d_El_W = self.s.derivative_energy_W
+        self.print_averages()
         return d_El_a, d_El_b, d_El_W
 
     def run_importance_sampling(self, analytic):
@@ -152,20 +153,19 @@ class Metropolis:
         # Initialize the posistions for each new Monte Carlo run
         positions = np.random.rand(self.num_p*self.num_d)
         # Initialize sampler method for each new Monte Carlo run
-        sampler = Sampler(self.w, self.h, 'false')
+        self.s.initialize()
 
         for i in range(self.mc_cycles):
             new_positions = self.importance_sampling_step(positions, analytic)
             positions = new_positions
-            sampler.sample_values(positions)
-        sampler.average_values(self.mc_cycles)
-        print ('accepted states = ', self.c)
+            self.s.sample_values(positions, 'false')
+        self.s.average_values(self.mc_cycles)
 
         # the derivative_energy is an array
-        d_El_a = sampler.derivative_energy_a
-        d_El_b = sampler.derivative_energy_b
-        d_El_W = sampler.derivative_energy_W
-        sampler.print_avereges()
+        d_El_a = self.s.derivative_energy_a
+        d_El_b = self.s.derivative_energy_b
+        d_El_W = self.s.derivative_energy_W
+        self.print_averages()
         return d_El_a, d_El_b, d_El_W
 
     def run_gibbs_sampling(self):
@@ -175,18 +175,30 @@ class Metropolis:
         # Initialize the posistions for each new Monte Carlo run
         positions = np.random.rand(self.num_p*self.num_d)
         # Initialize sampler method for each new Monte Carlo run
-        sampler = Sampler(self.w, self.h, 'true')
+        self.s.initialize()
 
         for i in range(self.mc_cycles):
             new_positions = self.gibbs_step(positions)
             positions = new_positions
-            sampler.sample_values(positions)
-        sampler.average_values(self.mc_cycles)
-        print ('accepted states = ', self.c)
+            self.s.sample_values(positions, 'true')
+        self.s.average_values(self.mc_cycles)
 
         # the derivative_energy is an array
-        d_El_a = sampler.derivative_energy_a
-        d_El_b = sampler.derivative_energy_b
-        d_El_W = sampler.derivative_energy_W
-        sampler.print_avereges()
+        d_El_a = self.s.derivative_energy_a
+        d_El_b = self.s.derivative_energy_b
+        d_El_W = self.s.derivative_energy_W
+        self.print_averages()
         return d_El_a, d_El_b, d_El_W
+
+    def print_averages(self):
+
+        print ('acceptance rate = ', self.c/self.mc_cycles)
+        print ('a parameter = ', self.w.a)
+        print ('b parameter = ', self.w.b)
+        print ('W parameter = ', self.w.W)
+        print ('deri energy param a = ', self.s.derivative_energy_a)
+        print ('deri energy param b = ', self.s.derivative_energy_b)
+        print ('deri energy param W = ', self.s.derivative_energy_W)
+        print ('\033[1m total energy \033[0m =  ', self.s.local_energy)
+        # energy/num_particles
+        print ('----------------------------')
