@@ -109,10 +109,3 @@ def weak_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
         param_a = new_a
         param_b = new_b
         param_W = new_W
-
-
-"""case(monte_carlo_cycles, number of particles,
-        number of dimensions, number of hidden nodes)"""
-
-non_interaction_case(100000, 1, 2, 3)
-# weak_interaction_case(100000, 2, 3, 3)
