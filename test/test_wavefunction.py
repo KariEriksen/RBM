@@ -22,13 +22,14 @@ def test_wavefunction_2d_2p():
         W = np.random.uniform(-2, 2, (M, N))
         wave = Wavefunction(M, N, a, b, W, sigma)
         positions = np.random.uniform(-1, 1, M)
-        sum1 = np.subtract(positions, a)
-        sum1 = np.sum(sum1*sum1)/(2*sigma*sigma)
+        sum1 = positions - a
+        sum1 = np.square(sum1)
+        sum1 = np.sum(sum1)/(2*sigma*sigma)
         term1 = math.exp(-sum1)
         sum2 = 0.0
         prod = 1.0
         for j in range(N):
-            sum2 += np.dot(positions, W[:, j])/(sigma*sigma)
+            sum2 = np.dot(positions, W[:, j])/(sigma*sigma)
             prod *= (1 + math.exp(b[j] + sum2))
 
         wave_function = term1*prod
@@ -51,13 +52,14 @@ def test_wavefunction_3d_2p():
         W = np.random.uniform(-2, 2, (M, N))
         wave = Wavefunction(M, N, a, b, W, sigma)
         positions = np.random.uniform(-1, 1, M)
-        sum1 = np.subtract(positions, a)
-        sum1 = np.sum(sum1*sum1)/(2*sigma*sigma)
+        sum1 = positions - a
+        sum1 = np.square(sum1)
+        sum1 = np.sum(sum1)/(2*sigma*sigma)
         term1 = math.exp(-sum1)
         sum2 = 0.0
         prod = 1.0
         for j in range(N):
-            sum2 += np.dot(positions, W[:, j])/(sigma*sigma)
+            sum2 = np.dot(positions, W[:, j])/(sigma*sigma)
             prod *= (1 + math.exp(b[j] + sum2))
 
         wave_function = term1*prod

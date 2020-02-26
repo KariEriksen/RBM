@@ -25,7 +25,7 @@ class Hamiltonian:
         for i in range(self.w.M):
             Xi += positions[i]*positions[i]
 
-        local_energy = 0.5*(-first_deri*first_deri +
+        local_energy = 0.5*(-first_deri*first_deri -
                             second_deri + self.omega2*Xi)
 
         if self.interaction == 'true':
@@ -114,16 +114,6 @@ class Hamiltonian:
     def interaction_energy(self, positions):
         """Return the interaction between particles"""
 
-        n = self.num_d
         interaction = 0.0
-        for i in range(self.num_p):
-            for j in range(i, self.num_p-1):
-                r = 0.0
-                for k in range(self.num_d):
-                    # ri_minus_rj = np.subtract(positions[i], positions[j+1])
-
-                    ri_minus_rj = positions[(i*n)+k] - positions[((j+1)*n)+k]
-                    r += ri_minus_rj**2
-                interaction += 1.0/math.sqrt(r)
 
         return interaction

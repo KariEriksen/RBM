@@ -23,11 +23,12 @@ class Wavefunction:
         in the probability term or in the energy term where its derivative
         equals zero."""
 
-        sum1 = sum2 = 0.0
+        sum1 = 0.0
         prod = 1.0
         for i in range(self.M):
             sum1 += ((positions[i] - self.a[i])**2)/(2*self.sigma2)
         for j in range(self.N):
+            sum2 = 0.0
             for i in range(self.M):
                 sum2 += positions[i]*self.W[i, j]/self.sigma2
             prod *= (1 + math.exp(self.b[j] + sum2))
@@ -53,13 +54,17 @@ class Wavefunction:
                     sum1 += positions[i]*self.W[i, j]/self.sigma2
 
                 exponent = math.exp(-self.b[j] - sum1)
-                sum2 += self.W[k, j]/(1.0 + exponent)
-                sum3 += sum2*sum2*exponent
+                denominator = 1.0 + exponent
+
+                sigmoid = 1.0/denominator
+                sigmoid_deri = exponent/(denominator*denominator)
+                sum2 += self.W[k, j]*sigmoid
+                sum3 += self.W[k, j]*self.W[k, j]*sigmoid_deri
 
             first_derivative += (-(positions[k] - self.a[k])/self.sigma2
-                                 + (1.0/self.sigma2)*sum2)
+                                 + sum2/self.sigma2)
 
-            second_derivative += -1.0/self.sigma2 + (1.0/self.sigma4)*sum3
+            second_derivative += -1.0/self.sigma2 + sum3/self.sigma4
         # print -first_derivative*first_derivative
         # print second_derivative
         # ksk

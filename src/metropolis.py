@@ -105,15 +105,17 @@ class Metropolis:
         """Calculate new Gibbs step."""
 
         h_j = np.zeros(self.w.N)
-        sigma = 1
-        sigma2 = 1
+        sigma = 1.0
+        sigma2 = 1.0
 
         for j in range(self.w.N):
             sum = 0.0
             for i in range(self.w.M):
                 sum += positions[i]*self.w.W[i, j]/sigma2
 
-            h_j[j] = 1/(1 + math.exp(-self.w.b[j] - sum))
+            b = self.w.b[j] + sum
+            exponent = math.exp(-b)
+            h_j[j] = 1.0/(1 + exponent)
 
         for i in range(self.w.M):
             sum = 0.0
