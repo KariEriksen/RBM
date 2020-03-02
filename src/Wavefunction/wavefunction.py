@@ -36,15 +36,13 @@ class Wavefunction:
         wavefunction = math.exp(-sum1)*prod
         return wavefunction
 
-    def gradients_wavefunction(self, positions):
+    def gradient_wavefunction(self, positions):
         """Return the first and second derivative of ln of the wave function"""
 
         first_derivative = 0.0
-        second_derivative = 0.0
 
         for k in range(self.M):
             sum2 = 0.0
-            sum3 = 0.0
             for j in range(self.N):
                 sum1 = 0.0
                 for i in range(self.M):
@@ -54,18 +52,34 @@ class Wavefunction:
                 denominator = 1.0 + exponent
 
                 sigmoid = 1.0/denominator
-                sigmoid_deri = exponent/(denominator*denominator)
                 sum2 += self.W[k, j]*sigmoid
-                sum3 += self.W[k, j]*self.W[k, j]*sigmoid_deri
 
-            first_derivative += (-(positions[k] - self.a[k])/self.sigma2
-                                 + sum2/self.sigma2)
+            x_min_a = positions[k] - self.a[k]
+            first_derivative += (-(x_min_a)/self.sigma2 + sum2/self.sigma2)**2
 
-            second_derivative += -1.0/self.sigma2 + sum3/self.sigma4
-        # print -first_derivative*first_derivative
-        # print second_derivative
-        # ksk
-        return first_derivative, second_derivative
+        return first_derivative
+
+    def laplacian_wavefunction(self, positions):
+        """Return the first and second derivative of ln of the wave function"""
+
+        second_derivative = 0.0
+
+        for k in range(self.M):
+            sum2 = 0.0
+            for j in range(self.N):
+                sum1 = 0.0
+                for i in range(self.M):
+                    sum1 += positions[i]*self.W[i, j]/self.sigma2
+
+                exponent = math.exp(self.b[j] + sum1)
+                denominator = 1.0 + exponent
+
+                sigmoid_deri = exponent/(denominator*denominator)
+                sum2 += self.W[k, j]*self.W[k, j]*sigmoid_deri
+
+            second_derivative += -1.0/self.sigma2 + sum2/self.sigma4
+
+        return second_derivative
 
     def quandratic_gradients_wavefunction(self, positions):
         """Return the first and second derivative of ln of the"""
@@ -87,7 +101,7 @@ class Wavefunction:
         dpsi_da = np.zeros(self.M)
 
         for k in range(self.M):
-            dpsi_da[k] = (1/(self.sigma2))*(positions[k] - self.a[k])
+            dpsi_da[k] = (1.0/(self.sigma2))*(positions[k] - self.a[k])
 
         return dpsi_da
 
@@ -104,7 +118,7 @@ class Wavefunction:
             for i in range(self.M):
                 sum += positions[i]*self.W[i, n]/self.sigma2
 
-            dpsi_db[n] = 1/(1 + math.exp(-self.b[n] - sum))
+            dpsi_db[n] = 1.0/(math.exp(-self.b[n] - sum) + 1.0)
 
         return dpsi_db
 
@@ -122,7 +136,7 @@ class Wavefunction:
                 for i in range(self.M):
                     sum += positions[i]*self.W[i, n]/self.sigma2
 
-                term = 1/(1 + math.exp(-self.b[n] - sum))
+                term = 1.0/(math.exp(-self.b[n] - sum) + 1.0)
                 dpsi_dW[k, n] = term*positions[k]/(self.sigma2)
 
         return dpsi_dW

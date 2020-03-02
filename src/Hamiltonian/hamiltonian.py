@@ -22,12 +22,11 @@ class Hamiltonian:
         """Return the local energy."""
 
         Xi = 0.0
-        first_deri, second_deri = self.w.gradients_wavefunction(positions)
+        first_deri_sq = self.w.gradient_wavefunction(positions)
+        second_deri = self.w.laplacian_wavefunction(positions)
         for i in range(self.w.M):
             Xi += positions[i]*positions[i]
-
-        local_energy = 0.5*(-first_deri*first_deri -
-                            second_deri + self.omega2*Xi)
+        local_energy = 0.5*(-first_deri_sq - second_deri + self.omega2*Xi)
 
         if self.coulomb:
             interaction_energy = self.interaction_energy(positions)
@@ -44,11 +43,12 @@ class Hamiltonian:
 
         Xi = 0.0
         # quandratic_gradients_wavefunction returns the gradients times 0.5
-        fd, sd = self.w.quandratic_gradients_wavefunction(positions)
+        first_deri = 0.5*self.w.gradient_wavefunction(positions)
+        second_deri = 0.5*self.w.laplacian_wavefunction(positions)
         interaction_energy = self.interaction_energy(positions)
         for i in range(self.w.M):
             Xi += positions[i]*positions[i]
-        local_energy = 0.5*(-fd*fd + sd + self.omega2*Xi)
+        local_energy = 0.5*(-first_deri**2 + second_deri + self.omega2*Xi)
 
         if self.interaction:
             local_energy += interaction_energy
