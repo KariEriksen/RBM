@@ -165,10 +165,8 @@ class Wavefunction:
                 denominator = 1.0 + exponent
 
                 sigmoid = 1.0/denominator
-                sigmoid_deri = exponent/(denominator*denominator)
                 sum2 += self.W[k, j]*sigmoid
-
-            first_derivative[k] = (-(positions[k] - self.a[k])/self.sigma2
-                                 + sum2/self.sigma2)
+            pos_neg = positions[k] - self.a[k]
+            first_derivative[k] = (-pos_neg/self.sigma2 + sum2/self.sigma2)
 
         return first_derivative

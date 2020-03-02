@@ -28,7 +28,7 @@ class Hamiltonian:
         local_energy = 0.5*(-first_deri*first_deri -
                             second_deri + self.omega2*Xi)
 
-        if self.interaction == True:
+        if self.interaction:
             local_energy += interaction_energy
 
         else:
@@ -47,7 +47,7 @@ class Hamiltonian:
             Xi += positions[i]*positions[i]
         local_energy = 0.5*(-fd*fd + sd + self.omega2*Xi)
 
-        if self.interaction == True:
+        if self.interaction:
             local_energy += interaction_energy
         else:
             None
@@ -138,7 +138,6 @@ class Hamiltonian:
         sigma = 2.556
 
         n = self.num_d
-        interaction = 0.0
         for i in range(self.num_p):
             for j in range(i, self.num_p-1):
                 r = 0.0
@@ -149,9 +148,9 @@ class Hamiltonian:
                 if distance < self.sigma:
                     v = 0.0
                 else:
-                    C6 = (self.sigma/distance)**6
-                    C12 = (self.sigma/distance)**12
-                    v = 4*self.epsilon*(C12 - C6)
+                    C6 = (sigma/distance)**6
+                    C12 = (sigma/distance)**12
+                    v = 4*epsilon*(C12 - C6)
                 V += v
 
         return V
