@@ -32,9 +32,12 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
 
     # Initialize weights and biases
     visible_nodes = num_particles*num_dimensions
-    a_i = np.random.rand(visible_nodes)
-    b_j = np.random.rand(hidden_nodes)
-    W_ij = np.random.rand(visible_nodes, hidden_nodes)
+    # a_i = np.random.rand(visible_nodes)
+    # b_j = np.random.rand(hidden_nodes)
+    # W_ij = np.random.rand(visible_nodes, hidden_nodes)
+    a_i = np.zeros(visible_nodes)
+    b_j = np.zeros(hidden_nodes)
+    W_ij = np.zeros((visible_nodes, hidden_nodes))
 
     sigma = 1.0
     omega = 1.0
@@ -43,6 +46,11 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
     param_a = a_i
     param_b = b_j
     param_W = W_ij
+
+    d_El_array = np.zeros(gradient_iterations)
+    energy_array = np.zeros(gradient_iterations)
+    parameter_array = np.zeros(gradient_iterations)
+    var_array = np.zeros(gradient_iterations)
     for i in range(gradient_iterations):
 
         # Call system class in order to set new parameters
@@ -60,13 +68,20 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
         d_El_a = d_El[0]
         d_El_b = d_El[1]
         d_El_W = d_El[2]
+
         new_a, new_b, new_W = opt.gradient_descent(param_a, param_b, param_W,
                                                    d_El_a, d_El_b, d_El_W)
 
         print ('number of gradien descent runs = ', i)
-        param_a = new_a
-        param_b = new_b
-        param_W = new_W
+        #param_a = new_a
+        #param_b = new_b
+        #param_W = new_W
+
+        # d_El_array[i] = d_El
+        energy_array[i] = d_El[3]
+        # var_array[i] = var
+        # parameter_array[i] = new_parameter
+        # parameter = new_parameter
 
 
 def weak_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,

@@ -37,9 +37,6 @@ class Hamiltonian:
             lennard_jones_energy = self.lennard_jones_potential(positions)
             local_energy += lennard_jones_energy
 
-        else:
-            None
-
         return local_energy
 
     def local_energy_gibbs(self, positions):

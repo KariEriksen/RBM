@@ -42,9 +42,6 @@ class Wavefunction:
         first_derivative = 0.0
         second_derivative = 0.0
 
-        # TOMORROW
-        """Is it the weights that are initialized to high?"""
-
         for k in range(self.M):
             sum2 = 0.0
             sum3 = 0.0

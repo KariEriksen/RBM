@@ -17,12 +17,14 @@ class Sampler:
         if gibbs:
             self.local_energy = self.h.local_energy_gibbs(positions)
             self.accumulate_energy += self.h.local_energy_gibbs(positions)
+            self.accumulate_energy_sq += self.local_energy*self.local_energy
             gradient_wf_a = 0.5*self.w.gradient_wavefunction_a(positions)
             gradient_wf_b = 0.5*self.w.gradient_wavefunction_b(positions)
             gradient_wf_W = 0.5*self.w.gradient_wavefunction_W(positions)
         else:
             self.local_energy = self.h.local_energy(positions)
             self.accumulate_energy += self.h.local_energy(positions)
+            self.accumulate_energy_sq += self.local_energy*self.local_energy
             gradient_wf_a = self.w.gradient_wavefunction_a(positions)
             gradient_wf_b = self.w.gradient_wavefunction_b(positions)
             gradient_wf_W = self.w.gradient_wavefunction_W(positions)
@@ -65,11 +67,17 @@ class Sampler:
                                       (self.expec_val_psi_W *
                                        self.expec_val_energy))
 
+        expec_energy_sq = self.expec_val_energy*self.expec_val_energy
+        energy_sq = self.accumulate_energy_sq/monte_carlo_cycles
+        self.variance = energy_sq - expec_energy_sq
+
     def initialize(self):
         """Set all sampling values to zero"""
 
         self.local_energy = 0.0
         self.accumulate_energy = 0.0
+        self.accumulate_energy_sq = 0.0
+        self.variance = 0.0
         self.accumulate_psi_term_a = np.zeros(self.w.M)
         self.accumulate_psi_term_b = np.zeros(self.w.N)
         self.accumulate_psi_term_W = np.zeros((self.w.M, self.w.N))

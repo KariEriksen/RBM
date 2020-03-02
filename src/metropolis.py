@@ -155,7 +155,7 @@ class Metropolis:
         d_El_b = self.s.derivative_energy_b
         d_El_W = self.s.derivative_energy_W
         self.print_averages()
-        return d_El_a, d_El_b, d_El_W
+        return d_El_a, d_El_b, d_El_W, self.s.local_energy
 
     def run_importance_sampling(self, analytic):
         """Run importance algorithm."""
@@ -210,5 +210,6 @@ class Metropolis:
         print ('deri energy param b = ', self.s.derivative_energy_b)
         print ('deri energy param W = ', self.s.derivative_energy_W)
         print ('\033[1m total energy \033[0m =  ', self.s.local_energy)
+        print ('variance = ', self.s.variance)
         # energy/num_particles
         print ('----------------------------')
