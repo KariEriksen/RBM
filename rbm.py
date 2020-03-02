@@ -50,13 +50,13 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
                             param_a, param_b, param_W, sigma)
         # Run with interaction = true in Hamiltonian()
         hamilton = Hamiltonian(gamma, omega, num_dimensions, num_particles,
-                               wave, 'false')
+                               wave, False)
         met = Metropolis(monte_carlo_cycles, step_metropolis, step_importance,
                          num_particles, num_dimensions, wave, hamilton)
 
-        d_El = met.run_metropolis()
+        # d_El = met.run_metropolis()
         # Run with analytical expression for quantum force = true
-        # d_El = met.run_importance_sampling('true')
+        d_El = met.run_importance_sampling(True)
         # d_El = met.run_gibbs_sampling()
         d_El_a = d_El[0]
         d_El_b = d_El[1]
@@ -89,10 +89,11 @@ def weak_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
     for i in range(gradient_iterations):
 
         # Call system class in order to set new parameters
-        wave = Wavefunction(num_particles, num_dimensions, hidden_nodes,
+        wave = Wavefunction(visible_nodes, hidden_nodes,
                             param_a, param_b, param_W, sigma)
+        # Run with interaction = true in Hamiltonian()
         hamilton = Hamiltonian(gamma, omega, num_dimensions, num_particles,
-                               wave, 'true')
+                               wave, True)
         met = Metropolis(monte_carlo_cycles, step_metropolis, step_importance,
                          num_particles, num_dimensions, wave, hamilton)
 
