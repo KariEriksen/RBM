@@ -148,3 +148,27 @@ class Wavefunction:
         # sigmoid = np.zeros(self.M)
         sigmoid = 1/(1 + np.exp(positions))
         return sigmoid
+
+    def quantum_force(self, positions):
+        """Return the first derivative of ln of the wave function"""
+
+        first_derivative = np.zeros(self.M)
+
+        for k in range(self.M):
+            sum2 = 0.0
+            for j in range(self.N):
+                sum1 = 0.0
+                for i in range(self.M):
+                    sum1 += positions[i]*self.W[i, j]/self.sigma2
+
+                exponent = math.exp(-self.b[j] - sum1)
+                denominator = 1.0 + exponent
+
+                sigmoid = 1.0/denominator
+                sigmoid_deri = exponent/(denominator*denominator)
+                sum2 += self.W[k, j]*sigmoid
+
+            first_derivative[k] = (-(positions[k] - self.a[k])/self.sigma2
+                                 + sum2/self.sigma2)
+
+        return first_derivative

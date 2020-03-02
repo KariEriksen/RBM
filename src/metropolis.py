@@ -23,19 +23,23 @@ class Metropolis:
         self.c = 0.0
 
         self.s = Sampler(self.w, self.h)
+        self.sqrt_delta_t = np.sqrt(self.delta_t)
 
     def metropolis_step(self, positions):
         """Calculate new metropolis step."""
         """with brute-force sampling of new positions."""
 
-        r = random.random()*random.choice((-1, 1))
+        r = np.zeros(self.num_d)
+        for i in range(self.num_d):
+            r[i] = np.random.uniform(-1, 1)
+        # r = random.random()*random.choice((-1, 1))
         # Pick a random particle
         random_index = random.randrange(self.num_p)
         j = random_index*self.num_d
         new_positions = np.array(positions)
         for i in range(self.num_d):
             # Suggest a new move
-            new_positions[j+i] += r*self.delta_R
+            new_positions[j+i] += r[i]*self.delta_R
 
         acceptance_ratio = self.w.wavefunction_ratio(positions, new_positions)
         epsilon = np.random.sample()
@@ -64,15 +68,20 @@ class Metropolis:
         else:
             F_old = self.w.quantum_force_numerical(positions)
 
-        r = random.random()*random.choice((-1, 1))
-        # Pick a random particle and calculate new position
-        random_index = random.randrange(len(positions))
+        r = np.zeros(self.num_d)
+        for i in range(self.num_d):
+            r[i] = random.gauss(0, 1)
+        # r = random.random()*random.choice((-1, 1))
+        # Pick a random particle
+        random_index = random.randrange(self.num_p)
+        j = random_index*self.num_d
         new_positions = np.array(positions)
+        for i in range(self.num_d):
+            # Suggest a new move
+            term1 = D*F_old[j+i]*self.delta_t
+            term2 = r[i]*self.sqrt_delta_t
+            new_positions[j+i] += term1 + term2
 
-        term1 = D*F_old[random_index, :]*self.delta_t
-        term2 = r*np.sqrt(self.delta_t)
-        new_random_position = new_positions[random_index, :] + term1 + term2
-        new_positions[random_index, :] = new_random_position
         prob_ratio = self.w.wavefunction_ratio(positions, new_positions)
 
         if analytic:
@@ -80,12 +89,11 @@ class Metropolis:
         else:
             F_new = self.w.quantum_force_numerical(new_positions)
 
-        for i in range(self.num_p):
-            for j in range(self.num_d):
-                term1 = 0.5*((F_old[i, j] + F_new[i, j]) *
-                             (positions[i, j] - new_positions[i, j]))
-                term2 = D*self.delta_t*(F_old[i, j] - F_new[i, j])
-                greens_function += term1 + term2
+        for i in range(self.num_p*self.num_d):
+            term1 = 0.5*((F_old[i] + F_new[i]) *
+                         (positions[i] - new_positions[i]))
+            term2 = D*self.delta_t*(F_old[i] - F_new[i])
+            greens_function += term1 + term2
 
         greens_function = np.exp(greens_function)
 
@@ -139,7 +147,7 @@ class Metropolis:
         for i in range(self.mc_cycles):
             new_positions = self.metropolis_step(positions)
             positions = new_positions
-            self.s.sample_values(positions, 'false')
+            self.s.sample_values(positions, False)
         self.s.average_values(self.mc_cycles)
 
         # the derivative_energy is an array
@@ -160,7 +168,7 @@ class Metropolis:
         for i in range(self.mc_cycles):
             new_positions = self.importance_sampling_step(positions, analytic)
             positions = new_positions
-            self.s.sample_values(positions, 'false')
+            self.s.sample_values(positions, False)
         self.s.average_values(self.mc_cycles)
 
         # the derivative_energy is an array
@@ -182,7 +190,7 @@ class Metropolis:
         for i in range(self.mc_cycles):
             new_positions = self.gibbs_step(positions)
             positions = new_positions
-            self.s.sample_values(positions, 'true')
+            self.s.sample_values(positions, True)
         self.s.average_values(self.mc_cycles)
 
         # the derivative_energy is an array

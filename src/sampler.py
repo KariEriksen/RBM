@@ -14,7 +14,7 @@ class Sampler:
         """Get the local energy from Hamiltonian class"""
         """Sample important values"""
 
-        if gibbs == 'true':
+        if gibbs == True:
             self.local_energy = self.h.local_energy_gibbs(positions)
             self.accumulate_energy += self.h.local_energy_gibbs(positions)
         else:
