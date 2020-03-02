@@ -27,12 +27,13 @@ def test_local_energy_2d_2p():
 
     for _ in range(50):
         positions = np.random.uniform(-2, 2, M)
-        fd, sd = wave.gradients_wavefunction(positions)
+        fd = wave.gradient_wavefunction(positions)
+        sd = wave.laplacian_wavefunction(positions)
         x = 0.0
         for i in range(M):
             x += positions[i]*positions[i]
 
-        energy = 0.5*(-(fd*fd) - sd + omega*omega*x)
+        energy = 0.5*(-(fd) - sd + omega*omega*x)
 
         assert energy == pytest.approx(hamilton.local_energy(positions),
                                        abs=1e-14)
@@ -56,12 +57,13 @@ def test_local_energy_3d_2p():
 
     for _ in range(50):
         positions = np.random.uniform(-2, 2, M)
-        fd, sd = wave.gradients_wavefunction(positions)
+        fd = wave.gradient_wavefunction(positions)
+        sd = wave.laplacian_wavefunction(positions)
         x = 0.0
         for i in range(M):
             x += positions[i]*positions[i]
 
-        energy = 0.5*(-fd*fd - sd + omega*omega*x)
+        energy = 0.5*(-fd - sd + omega*omega*x)
 
         assert energy == pytest.approx(hamilton.local_energy(positions),
                                        abs=1e-14)
