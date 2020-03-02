@@ -23,7 +23,7 @@ def test_local_energy_2d_2p():
     sigma = 1.0
     wave = Wavefunction(M, N, a, b, W, sigma)
     hamilton = Hamiltonian(gamma, omega, num_dimensions,
-                           num_particles, wave, 'false')
+                           num_particles, wave, False)
 
     for _ in range(50):
         positions = np.random.uniform(-2, 2, M)
@@ -52,7 +52,7 @@ def test_local_energy_3d_2p():
     sigma = 1.0
     wave = Wavefunction(M, N, a, b, W, sigma)
     hamilton = Hamiltonian(gamma, omega, num_dimensions,
-                           num_particles, wave, 'false')
+                           num_particles, wave, False)
 
     for _ in range(50):
         positions = np.random.uniform(-2, 2, M)
