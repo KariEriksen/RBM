@@ -17,18 +17,20 @@ class Sampler:
         if gibbs:
             self.local_energy = self.h.local_energy_gibbs(positions)
             self.accumulate_energy += self.h.local_energy_gibbs(positions)
+            gradient_wf_a = 0.5*self.w.gradient_wavefunction_a(positions)
+            gradient_wf_b = 0.5*self.w.gradient_wavefunction_b(positions)
+            gradient_wf_W = 0.5*self.w.gradient_wavefunction_W(positions)
         else:
             self.local_energy = self.h.local_energy(positions)
             self.accumulate_energy += self.h.local_energy(positions)
+            gradient_wf_a = self.w.gradient_wavefunction_a(positions)
+            gradient_wf_b = self.w.gradient_wavefunction_b(positions)
+            gradient_wf_W = self.w.gradient_wavefunction_W(positions)
         # self.local_energy = self.h.local_energy_numerical(positions)
         # self.accumulate_energy += self.h.local_energy_numerical(positions)
-        gradient_wf_a = np.zeros(self.w.M)
-        gradient_wf_b = np.zeros(self.w.N)
-        gradient_wf_W = np.zeros((self.w.M, self.w.N))
-
-        gradient_wf_a = self.w.gradient_wavefunction_a(positions)
-        gradient_wf_b = self.w.gradient_wavefunction_b(positions)
-        gradient_wf_W = self.w.gradient_wavefunction_W(positions)
+        # gradient_wf_a = np.zeros(self.w.M)
+        # gradient_wf_b = np.zeros(self.w.N)
+        # gradient_wf_W = np.zeros((self.w.M, self.w.N))
 
         self.accumulate_psi_term_a += gradient_wf_a
         self.accumulate_psi_term_b += gradient_wf_b

@@ -6,7 +6,8 @@ import numpy as np
 class Hamiltonian:
     """Calculate variables regarding energy of given system."""
 
-    def __init__(self, gamma, omega, num_d, num_p, wavefunction, interaction):
+    def __init__(self, gamma, omega, num_d, num_p, wavefunction, coulomb,
+                 lennard_jones):
         """Instance of class."""
         self.gamma = gamma
         self.omega = omega
@@ -14,22 +15,27 @@ class Hamiltonian:
         self.num_d = num_d
         self.num_p = num_p
         self.w = wavefunction
-        self.interaction = interaction
+        self.coulomb = coulomb
+        self.lennard_jones = lennard_jones
 
     def local_energy(self, positions):
         """Return the local energy."""
 
         Xi = 0.0
         first_deri, second_deri = self.w.gradients_wavefunction(positions)
-        interaction_energy = self.interaction_energy(positions)
         for i in range(self.w.M):
             Xi += positions[i]*positions[i]
 
         local_energy = 0.5*(-first_deri*first_deri -
                             second_deri + self.omega2*Xi)
 
-        if self.interaction:
+        if self.coulomb:
+            interaction_energy = self.interaction_energy(positions)
             local_energy += interaction_energy
+
+        if self.lennard_jones:
+            lennard_jones_energy = self.lennard_jones_potential(positions)
+            local_energy += lennard_jones_energy
 
         else:
             None
@@ -145,7 +151,7 @@ class Hamiltonian:
                     ri_minus_rj = positions[(i*n)+k] - positions[((j+1)*n)+k]
                     r += ri_minus_rj**2
                 distance = math.sqrt(r)
-                if distance < self.sigma:
+                if distance < sigma:
                     v = 0.0
                 else:
                     C6 = (sigma/distance)**6
