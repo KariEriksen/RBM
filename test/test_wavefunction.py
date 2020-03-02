@@ -160,7 +160,7 @@ def test_gradient_wavefunction_a_2d_2p():
         W = np.random.uniform(-2, 2, (M, N))
         wave = Wavefunction(M, N, a, b, W, sigma)
         position = np.random.uniform(-1, 1, M)
-        grad = np.subtract(position, a)/(2*sigma*sigma)
+        grad = np.subtract(position, a)/(sigma*sigma)
 
         assert grad == pytest.approx(wave.gradient_wavefunction_a(position),
                                      abs=1e-10)
@@ -180,7 +180,7 @@ def test_gradient_wavefunction_a_3d_2p():
         W = np.random.uniform(-2, 2, (M, N))
         wave = Wavefunction(M, N, a, b, W, sigma)
         position = np.random.uniform(-1, 1, M)
-        grad = np.subtract(position, a)/(2*sigma*sigma)
+        grad = np.subtract(position, a)/(sigma*sigma)
 
         assert grad == pytest.approx(wave.gradient_wavefunction_a(position),
                                      abs=1e-10)
@@ -205,7 +205,7 @@ def test_gradient_wavefunction_b_2d_2p():
             term = np.dot(position, W[:, j])/(sigma*sigma)
             gradient[j] = 1/(1 + math.exp(-b[j] - term))
 
-        grad = 0.5*gradient
+        grad = gradient
 
         assert grad == pytest.approx(wave.gradient_wavefunction_b(position),
                                      abs=1e-10)
@@ -230,7 +230,7 @@ def test_gradient_wavefunction_b_3d_2p():
             term = np.dot(position, W[:, j])/(sigma*sigma)
             gradient[j] = 1/(1 + math.exp(-b[j] - term))
 
-        grad = 0.5*gradient
+        grad = gradient
 
         assert grad == pytest.approx(wave.gradient_wavefunction_b(position),
                                      abs=1e-10)
@@ -254,7 +254,7 @@ def test_gradient_wavefunction_W_2d_2p():
         for k in range(M):
             for j in range(N):
                 term = np.dot(position, W[:, j])/(sigma*sigma)
-                factor = position[k]/(2*sigma*sigma)
+                factor = position[k]/(sigma*sigma)
                 gradient[k, j] = factor*(1/(1 + math.exp(-b[j] - term)))
 
         grad = gradient
@@ -281,7 +281,7 @@ def test_gradient_wavefunction_W_3d_2p():
         for k in range(M):
             for j in range(N):
                 term = np.dot(position, W[:, j])/(sigma*sigma)
-                factor = position[k]/(2*sigma*sigma)
+                factor = position[k]/(sigma*sigma)
                 gradient[k, j] = factor*(1/(1 + math.exp(-b[j] - term)))
 
         grad = gradient
