@@ -27,7 +27,10 @@ class Hamiltonian:
         for i in range(self.w.M):
             Xi += positions[i]*positions[i]
         local_energy = 0.5*(-first_deri_sq - second_deri + self.omega2*Xi)
-
+        # print ('Xi = ', Xi)
+        # print ('first times Xi = ', first_deri_sq+Xi)
+        # print ('second = ', second_deri)
+        # print ('local_energy = ', local_energy)
         if self.coulomb:
             interaction_energy = self.interaction_energy(positions)
             local_energy += interaction_energy
@@ -50,10 +53,13 @@ class Hamiltonian:
             Xi += positions[i]*positions[i]
         local_energy = 0.5*(-first_deri**2 + second_deri + self.omega2*Xi)
 
-        if self.interaction:
+        if self.coulomb:
+            interaction_energy = self.interaction_energy(positions)
             local_energy += interaction_energy
-        else:
-            None
+
+        if self.lennard_jones:
+            lennard_jones_energy = self.lennard_jones_potential(positions)
+            local_energy += lennard_jones_energy
 
         return local_energy
 

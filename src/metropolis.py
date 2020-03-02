@@ -121,8 +121,8 @@ class Metropolis:
             for i in range(self.w.M):
                 sum += positions[i]*self.w.W[i, j]/sigma2
 
-            b = self.w.b[j] + sum
-            exponent = math.exp(-b)
+            term = -self.w.b[j] - sum
+            exponent = math.exp(term)
             h_j[j] = 1.0/(1 + exponent)
 
         for i in range(self.w.M):
@@ -134,6 +134,7 @@ class Metropolis:
             # acceptance with probability of 1
             positions[i] = np.random.normal(mu, sigma)
 
+        self.c += 1.0
         return positions
 
     def run_metropolis(self):
@@ -176,7 +177,7 @@ class Metropolis:
         d_El_b = self.s.derivative_energy_b
         d_El_W = self.s.derivative_energy_W
         self.print_averages()
-        return d_El_a, d_El_b, d_El_W
+        return d_El_a, d_El_b, d_El_W, self.s.local_energy
 
     def run_gibbs_sampling(self):
         """Run Gibbs sampling."""
@@ -198,7 +199,81 @@ class Metropolis:
         d_El_b = self.s.derivative_energy_b
         d_El_W = self.s.derivative_energy_W
         self.print_averages()
-        return d_El_a, d_El_b, d_El_W
+        return d_El_a, d_El_b, d_El_W, self.s.local_energy
+
+    def run_one_body_sampling(self):
+        """Sample position of particles."""
+
+        # Initialize the posistions for each new Monte Carlo run
+        positions = np.random.rand(self.num_p*self.num_d)
+        # Initialize sampler method for each new Monte Carlo run
+        self.s.initialize()
+
+        density_adding = np.zeros(41)
+
+        # Run Metropolis while finding one body density
+        for i in range(self.mc_cycles):
+            new_positions = self.metropolis_step(positions)
+            positions = new_positions
+            density = self.one_body_density(positions)
+            density_adding += density
+            # self.sam.sample_values(positions)
+
+        # self.sam.average_values(self.mc_cycles)
+        # self.print_averages()
+
+        return density_adding
+
+    def one_body_density(self, positions):
+        """Run one-body density count."""
+
+        num_radii = 41
+        density = np.zeros(num_radii)
+        r_vec = np.linspace(0, 4, num_radii)
+        step = r_vec[1] - r_vec[0]
+
+        # Calculate the distance from origo of each particle
+        radii = np.zeros(self.num_p)
+        n = self.num_d
+        for i in range(self.num_p):
+            r = 0
+            for j in range(self.num_d):
+                r += positions[i*n+j]*positions[i*n+j]
+            radii[i] = math.sqrt(r)
+
+        # Check in which segment each particle is in
+        for i in range(self.num_p):
+            dr = 0.0
+            for j in range(num_radii):
+                if(dr <= radii[i] < dr+step):
+                    density[j] += 1
+                    break
+                else:
+                    dr += step
+
+        return density
+
+    def blocking(self, analytic):
+        """Sample for blocking"""
+        """using importance sampling"""
+
+        # Initialize the posistions for each new Monte Carlo run
+        positions = np.random.rand(self.num_p*self.num_d)
+        # Initialize sampler method for each new Monte Carlo run
+        self.s.initialize()
+        # Initialize sampler method for each new Monte Carlo run
+        energy = np.zeros(self.mc_cycles)
+
+        for i in range(self.mc_cycles):
+            # new_positions = self.importance_sampling_step(positions, analytic)
+            new_positions = self.metropolis_step(positions)
+            positions = new_positions
+            self.sam.sample_values(positions)
+            energy[i] = self.sam.local_energy
+
+        self.sam.average_values(self.mc_cycles)
+        self.print_averages()
+        return energy
 
     def print_averages(self):
 
