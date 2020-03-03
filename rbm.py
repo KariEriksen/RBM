@@ -3,6 +3,7 @@
 import numpy as np
 import sys
 import os
+import matplotlib.pyplot as plt
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 from metropolis import Metropolis # noqa: 401
@@ -19,8 +20,8 @@ configurations. Optimizing using Gradient descent.
 
 step_metropolis = 1.0
 step_importance = 0.01
-learning_rate = 0.4
-gradient_iterations = 1000
+learning_rate = 0.1
+gradient_iterations = 10
 
 opt = Optimizer(learning_rate)
 # Initialize the variational parameters
@@ -32,12 +33,12 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
 
     # Initialize weights and biases
     visible_nodes = num_particles*num_dimensions
-    # a_i = np.random.rand(visible_nodes)
-    # b_j = np.random.rand(hidden_nodes)
-    # W_ij = np.random.rand(visible_nodes, hidden_nodes)
-    a_i = np.zeros(visible_nodes)
-    b_j = np.zeros(hidden_nodes)
-    W_ij = np.zeros((visible_nodes, hidden_nodes))
+    a_i = np.random.rand(visible_nodes)
+    b_j = np.random.rand(hidden_nodes)
+    W_ij = np.random.rand(visible_nodes, hidden_nodes)
+    # a_i = np.zeros(visible_nodes)
+    # b_j = np.zeros(hidden_nodes)
+    # W_ij = np.zeros((visible_nodes, hidden_nodes))
 
     sigma = 1.0
     omega = 1.0
@@ -56,14 +57,14 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
         # Call system class in order to set new parameters
         wave = Wavefunction(visible_nodes, hidden_nodes,
                             param_a, param_b, param_W, sigma)
+        # Hamiltonian(..., weak_interaction, strong_interaction)
         hamilton = Hamiltonian(gamma, omega, num_dimensions, num_particles,
                                wave, False, False)
         met = Metropolis(monte_carlo_cycles, step_metropolis, step_importance,
                          num_particles, num_dimensions, wave, hamilton)
 
         d_El = met.run_metropolis()
-        # Run with analytical expression for quantum force = true
-        # d_El = met.run_importance_sampling(True)
+        # d_El = met.run_importance_sampling()
         # d_El = met.run_gibbs_sampling()
         d_El_a = d_El[0]
         d_El_b = d_El[1]
@@ -73,15 +74,17 @@ def non_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,
                                                    d_El_a, d_El_b, d_El_W)
 
         print ('number of gradien descent runs = ', i)
-        #param_a = new_a
-        #param_b = new_b
-        #param_W = new_W
+        param_a = new_a
+        param_b = new_b
+        param_W = new_W
 
         # d_El_array[i] = d_El
         energy_array[i] = d_El[3]
+
+    plt.plot(energy_array)
+    plt.show()
         # var_array[i] = var
         # parameter_array[i] = new_parameter
-        # parameter = new_parameter
 
 
 def weak_interaction_case(monte_carlo_cycles, num_particles, num_dimensions,

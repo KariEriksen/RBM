@@ -53,7 +53,7 @@ class Metropolis:
 
         return positions
 
-    def importance_sampling_step(self, positions, analytic):
+    def importance_sampling_step(self, positions):
         """Calculate new step with Importance sampling."""
         """With upgrad method for suggetion of new positions."""
         """Given through the Langevin equation.
@@ -62,16 +62,11 @@ class Metropolis:
 
         D = 0.5
         greens_function = 0.0
-
-        if analytic:
-            F_old = self.w.quantum_force(positions)
-        else:
-            F_old = self.w.quantum_force_numerical(positions)
+        F_old = self.w.quantum_force(positions)
 
         r = np.zeros(self.num_d)
         for i in range(self.num_d):
             r[i] = random.gauss(0, 1)
-        # r = random.random()*random.choice((-1, 1))
         # Pick a random particle
         random_index = random.randrange(self.num_p)
         j = random_index*self.num_d
@@ -83,11 +78,7 @@ class Metropolis:
             new_positions[j+i] += term1 + term2
 
         prob_ratio = self.w.wavefunction_ratio(positions, new_positions)
-
-        if analytic:
-            F_new = self.w.quantum_force(new_positions)
-        else:
-            F_new = self.w.quantum_force_numerical(new_positions)
+        F_new = self.w.quantum_force(new_positions)
 
         for i in range(self.num_p*self.num_d):
             term1 = 0.5*((F_old[i] + F_new[i]) *
@@ -123,7 +114,12 @@ class Metropolis:
 
             term = -self.w.b[j] - sum
             exponent = math.exp(term)
-            h_j[j] = 1.0/(1 + exponent)
+            P_hj = 1.0/(1 + exponent)
+            r = np.random.uniform(0, 1)
+            if P_hj > r:
+                h_j[j] = 1.0
+            else:
+                h_j[j] = 0.0
 
         for i in range(self.w.M):
             sum = 0.0
@@ -158,7 +154,7 @@ class Metropolis:
         self.print_averages()
         return d_El_a, d_El_b, d_El_W, self.s.local_energy
 
-    def run_importance_sampling(self, analytic):
+    def run_importance_sampling(self):
         """Run importance algorithm."""
 
         # Initialize the posistions for each new Monte Carlo run
@@ -167,7 +163,7 @@ class Metropolis:
         self.s.initialize()
 
         for i in range(self.mc_cycles):
-            new_positions = self.importance_sampling_step(positions, analytic)
+            new_positions = self.importance_sampling_step(positions)
             positions = new_positions
             self.s.sample_values(positions, False)
         self.s.average_values(self.mc_cycles)
