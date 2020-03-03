@@ -249,7 +249,7 @@ class Metropolis:
 
         return density
 
-    def blocking(self, analytic):
+    def blocking(self):
         """Sample for blocking"""
         """using importance sampling"""
 
@@ -261,7 +261,7 @@ class Metropolis:
         energy = np.zeros(self.mc_cycles)
 
         for i in range(self.mc_cycles):
-            # new_positions = self.importance_sampling_step(positions, analytic)
+            # new_positions = self.importance_sampling_step(positions)
             new_positions = self.metropolis_step(positions)
             positions = new_positions
             self.sam.sample_values(positions)
